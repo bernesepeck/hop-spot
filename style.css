@@ -192,6 +192,29 @@ h4 {
   background-color: var(--color-pink);
   --slider-position: 0;
   left: var(--slider-position);
+}
 
+.bar img {
+  max-width: 100%;
+}
+
+.bar .info-icons {
+  font-size: var(--font-size-m);
+}
+
+.data-wrapper {
+  display: flex;
+  gap: calc(var(--spacing) * 2);
+}
+
+.data-wrapper .data {
+  display: flex;
+  flex-direction: column;
+}
+
+.data-wrapper .data label {
+  font-size: var(--font-size-s);
+  font-weight: bold;
+  text-transform: uppercase;
 }
 
