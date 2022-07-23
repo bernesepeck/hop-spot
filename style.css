@@ -94,7 +94,7 @@ h4 {
   font-weight: bold;
 }
 
-
+/**BUTTON*/
 .button {
   border-radius: 5px;
   padding: calc(var(--spacing) * 2);
@@ -102,6 +102,8 @@ h4 {
   font-size: var(--font-size-m);
   font-weight: bold;
   text-transform: uppercase;
+  text-decoration: none;
+  color: var(--color-black);
 }
 
 .icon-button {
@@ -121,6 +123,14 @@ h4 {
   text-shadow: var(--inner-text-shadow);
 }
 
+/**LABEL **/
+label {
+  font-size: var(--font-size-m);
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+/**BALL ANIMATION*/
 .ball {
   border-radius: 50%;
   position: absolute;
@@ -155,6 +165,7 @@ h4 {
   transform: translate(225px, 470px);
 }
 
+/* General Site Wrapper Style */
 .site-wrapper {
   padding: calc(var(--spacing) * 4);
   height: 100%;
@@ -174,26 +185,7 @@ h4 {
   z-index: 1;
 }
 
-.slider {
-  width: 100%;
-  background-color: var(--color-black);
-  border-bottom: var(--slider-width) solid var(--color-black);
-  position: relative;
-  --slider-width: 3px;
-}
-.slider::after {
-  --slider-button-size: 20px;
-  content: '';
-  width: var(--slider-button-size);
-  height: var(--slider-button-size);
-  position: absolute;
-  border-radius: 50%;
-  top: calc(var(--slider-button-size) / 2 * -1);
-  background-color: var(--color-pink);
-  --slider-position: 0;
-  left: var(--slider-position);
-}
-
+/* BAR Site Styles */ 
 .bar img {
   max-width: 100%;
 }
@@ -216,5 +208,87 @@ h4 {
   font-size: var(--font-size-s);
   font-weight: bold;
   text-transform: uppercase;
+}
+
+
+
+/* SLIDER Styling */
+
+input[type=range] {
+  -webkit-appearance: none; /* Hides the slider so that custom slider can be made */
+  width: 100%; /* Specific width is required for Firefox. */
+  background: transparent; /* Otherwise white in Chrome */
+}
+
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+}
+
+input[type=range]:focus {
+  outline: none; /* Removes the blue border. You should probably do some kind of focus styling for accessibility reasons though. */
+}
+
+input[type=range]::-ms-track {
+  width: 100%;
+  cursor: pointer;
+
+  /* Hides the slider so custom styles can be added */
+  background: transparent; 
+  border-color: transparent;
+  color: transparent;
+}
+
+/* Special styling for WebKit/Blink */
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  cursor: pointer;
+  margin-top: -9px; /* You need to specify a margin in Chrome, but in Firefox and IE it is automatic */
+  --slider-button-size: 20px;
+  width: var(--slider-button-size);
+  height: var(--slider-button-size);
+  border-radius: 50%;
+  background-color: var(--color-pink);
+}
+
+/* All the same stuff for Firefox */
+input[type=range]::-moz-range-thumb {
+  cursor: pointer;
+  --slider-button-size: 20px;
+  width: var(--slider-button-size);
+  height: var(--slider-button-size);
+  border-radius: 50%;
+  background-color: var(--color-pink);
+}
+
+input[type=range]::-webkit-slider-runnable-track {
+  width: 100%;
+  background-color: var(--color-black);
+  height: var(--slider-width);
+  --slider-width: 3px;
+}
+
+input[type=range]::-moz-range-track {
+  width: 100%;
+  background-color: var(--color-black);
+  height: var(--slider-width);
+  --slider-width: 3px;
+}
+
+input[type=range]::-ms-track { /* should come after -webkit- */
+	border-color: transparent;
+	color: transparent;
+  width: 100%;
+  background-color: var(--color-black);
+  height: var(--slider-width);
+  --slider-width: 3px;
+}
+
+/*FILTER Site*/
+.filter-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 10);
+  height: 100%;
+  width: 100%;
 }
 
