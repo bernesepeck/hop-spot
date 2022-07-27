@@ -1,10 +1,12 @@
+import {  VALUE, LABEL } from '../common/kolibri/presentationModel.js';
 export {filterProjector};
 
 /**
  * Projector zum erstellen von der View für die Filter
  * @return {HTMLElement}
  */
- const filterProjector = () => {
+ const filterProjector = (filterModel) => {
+   console.log(filterModel);
   const filter = document.createElement("DIV");
   filter.setAttribute('class', 'filter-wrapper');
 
@@ -43,14 +45,22 @@ export {filterProjector};
   };
 
   /**
-   * Erstelltn ein RangeInput
+   * Erstellt ein RangeInput
+   * @param {HTMLElement} label
+   * @param {AttributeType<T>} Attr
    * @return {HTMLElement}
    */
-  const rangeInput = (label) => {
+  const rangeInput = (Attr) => {
     const wrapper = document.createElement('DIV');
     const rangeInput = document.createElement("INPUT");
     rangeInput.setAttribute('type', 'range');
-    wrapper.appendChild(label);
+    rangeInput.setAttribute('id', Attr.getQualifier());
+    const labelElement = label(Attr.getObs(LABEL).getValue(), Attr.getQualifier());
+    //Binding der Daten auf das Input
+    Attr.getObs(VALUE).onChange(value => rangeInput.value = value);
+    Attr.getObs(LABEL).onChange(label => {rangeInput.setAttribute('title', label); labelElement.textContent = label});
+
+    wrapper.appendChild(labelElement);
     wrapper.appendChild(rangeInput)
     return wrapper;
   };
@@ -76,7 +86,7 @@ export {filterProjector};
   }
 
   filter.appendChild(title('Was ist dir wichtig?', 1));
-  filter.appendChild(rangeInput(label('Distanz in KM', 'distance-slider')));
+  filter.appendChild(rangeInput(filterModel.distance));
   filter.appendChild(buttonList(label('Drinkpräverenzen', 'drink-filter')));
   filter.appendChild(button('Finde Bar', () => {}));
   
