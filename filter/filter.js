@@ -1,6 +1,7 @@
 import { Attribute, LABEL } from '../common/kolibri/presentationModel.js'
+import { filterProjector } from './filterProjector.js';
 
-export { Filter };
+export { Filter, FilterView };
 
 /**
  * Erstellt das Binding Model für den Filter
@@ -21,4 +22,15 @@ const Filter = () => {
     distance: distanceAttr,
     drinkPref: drinkPrefAttr
   }
+}
+
+/**
+ * renders the filter to the root element
+ * @param {AppController} appController 
+ * @param {HTMLElement} rootElement
+ * @param {selectionController} selectionController
+ */
+const FilterView = (appController, rootElement, filterModel, selectionController) => {
+  const render = () => filterProjector(filterModel, appController, rootElement, selectionController);
+  render();
 }

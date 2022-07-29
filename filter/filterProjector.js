@@ -1,13 +1,16 @@
 import {  VALUE, LABEL } from '../common/kolibri/presentationModel.js';
+import { button } from '../common/elements/button.js';
+import {title} from '../common/elements/title.js';
 export {filterProjector};
 
 /**
  * Projector to create the view for the filter
  * @param filterModel
  * @param appController
+ * @param {SelectionController} selectionController
  * @return {HTMLElement}
  */
- const filterProjector = (filterModel, appController) => {
+ const filterProjector = (filterModel, appController, rootElement, selectionController) => {
   const filter = document.createElement("DIV");
   filter.setAttribute('class', 'filter-wrapper');
 
@@ -99,33 +102,13 @@ export {filterProjector};
     return wrapper;
   };
 
-  /**
-   * Erstellt einen Button
-   * @param {*} text 
-   * @param {*} callFunction 
-   * @returns 
-   */
-  const button = (text, callFunction) => {
-    const button = document.createElement('BUTTON');
-    button.setAttribute('class', 'button');
-    button.addEventListener('click', callFunction)
-    button.textContent = text;
-    return button;
-  }
-
-  const title = (text, size) => {
-    const title = document.createElement(`h${size}`, text);
-    title.textContent = text;
-    return title;
-  }
-
   filter.appendChild(title('Was ist dir wichtig?', 1));
   filter.appendChild(rangeInput(filterModel.distance));
   filter.appendChild(buttonList(label('Drinkpräverenzen', 'drink-filter'), filterModel.drinkPref));
-  filter.appendChild(button('Finde Bar', () => appController.findBar(filterModel)));
+  filter.appendChild(button('Finde Bar', () => selectionController.setSelectedModel(appController.findBar(filterModel))));
   
 
-  return filter;
+  rootElement.replaceChildren(filter);
 }
 
 

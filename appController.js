@@ -128,7 +128,7 @@ const AppController = () => {
   const findBar = (filterModel) => {
     const filteredBars = barList.filter(b => JSON.stringify(filterModel.drinkPref.getObs(VALUE).getValue()) === JSON.stringify(b.getMenu()) && filterModel.distance.getObs(VALUE).getValue() >= getDistance(getCurrentLocation(), b.getCoordinates()))
     const bar =  filteredBars[Math.floor(Math.random()*barList.length)];
-    bar?.setDistance(getDistance(bar.getCoordinates, getCurrentLocation()));
+    bar?.setDistance(getDistance(bar.getCoordinates(), getCurrentLocation()));
     return bar;
   }
 
