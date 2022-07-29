@@ -3,11 +3,14 @@ import { loadBars } from './service/localService.js';
 import { filterProjector } from './filter/filterProjector.js';
 import {  Filter } from './filter/filter.js';
 
+const filterModel = Filter();
 const appController = AppController();
+appController.getCurrentLocation();
+
 
 loadBars().forEach(bar => appController.addBar(bar));
 
 //OpenFilter
 document.getElementById('open-filter').addEventListener('click', () => {
-  document.getElementById('site-wrapper').replaceChildren(filterProjector(Filter()));
+  document.getElementById('site-wrapper').replaceChildren(filterProjector(filterModel, appController));
 })
