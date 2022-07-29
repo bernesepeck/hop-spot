@@ -105,6 +105,10 @@ const AppController = () => {
       return(c * r);
   }
 
+  /**
+   * The current selectedBar
+   * @returns {Observable<Bar>}
+   */
   const selectedBar = () => {
     /**@type {Observable<Bar>} */
     const selectedBar = Observable();
@@ -123,9 +127,9 @@ const AppController = () => {
    */
   const findBar = (filterModel) => {
     const filteredBars = barList.filter(b => JSON.stringify(filterModel.drinkPref.getObs(VALUE).getValue()) === JSON.stringify(b.getMenu()) && filterModel.distance.getObs(VALUE).getValue() >= getDistance(getCurrentLocation(), b.getCoordinates()))
-    const bar =  filteredBars[Math.floor(Math.random()*items.length)];
-    bar.setDistance(getDistance(bar.getCoordinates, getCurrentLocation()));
-    selectedBar.setValue(bar);
+    const bar =  filteredBars[Math.floor(Math.random()*barList.length)];
+    bar?.setDistance(getDistance(bar.getCoordinates, getCurrentLocation()));
+    return bar;
   }
 
 
