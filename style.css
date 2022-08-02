@@ -215,9 +215,24 @@ label {
 /* SLIDER Styling */
 
 input[type=range] {
+  --current-value: 0;
+  --current-position: 0px;
   -webkit-appearance: none; /* Hides the slider so that custom slider can be made */
   width: 100%; /* Specific width is required for Firefox. */
   background: transparent; /* Otherwise white in Chrome */
+  position: relative;
+}
+
+input[type=range]::after {
+  counter-reset: current-value var(--current-value);
+  content: counter(current-value);
+  width: 20px;
+  height: 20px;
+  top: calc(var(--spacing) * 3);
+  position: absolute;
+  border-radius: 50%;
+  font-weight: bold;
+  left: var(--current-position);
 }
 
 input[type=range]::-webkit-slider-thumb {

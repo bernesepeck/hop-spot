@@ -9,7 +9,7 @@ export { Filter, FilterView };
  * @returns {Filter}
  */
 const Filter = () => {
-  const distanceAttr = Attribute(10, 'distanceFilter');
+  const distanceAttr = Attribute(1, 'distanceFilter');
   distanceAttr.getObs(LABEL).setValue('Distanz in KM');
 
   const drinkPrefAttr = Attribute({beer: true, wine: true, cocktail: false}, 'drinkPref');

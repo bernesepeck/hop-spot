@@ -84,18 +84,30 @@ export {filterProjector};
 
   /**
    * Erstellt ein RangeInput
-   * @param {HTMLElement} label
    * @param {AttributeType<T>} Attr
+   * @param {number} min
+   * @param {number} max
    * @return {HTMLElement}
    */
-  const rangeInput = (Attr) => {
+  const rangeInput = (Attr, min = 0, max = 100) => {
+    console.log(min, max);
     const wrapper = document.createElement('DIV');
     const rangeInput = document.createElement("INPUT");
     rangeInput.setAttribute('type', 'range');
     rangeInput.setAttribute('id', Attr.getQualifier());
+    rangeInput.setAttribute('min', min);
+    rangeInput.setAttribute('max', max);
+    
     const labelElement = label(Attr.getObs(LABEL).getValue(), Attr.getQualifier());
     //binding data to input
     bindTextInput(Attr, rangeInput, labelElement);
+
+    //sets the css costum property to show value when sliding the slider
+    Attr.getObs(VALUE).onChange(value => {
+      const newPosition = ((value - min) * 100) / (max - min);
+      rangeInput.style.setProperty("--current-value", value);
+      rangeInput.style.setProperty("--current-position", `calc(${newPosition}% + (${8 - newPosition * 0.20}px))`);
+    })
 
     wrapper.appendChild(labelElement);
     wrapper.appendChild(rangeInput)
@@ -103,7 +115,7 @@ export {filterProjector};
   };
 
   filter.appendChild(title('Was ist dir wichtig?', 1));
-  filter.appendChild(rangeInput(filterModel.distance));
+  filter.appendChild(rangeInput(filterModel.distance, 0, 10));
   filter.appendChild(buttonList(label('Drinkpräverenzen', 'drink-filter'), filterModel.drinkPref));
   filter.appendChild(button('Finde Bar', () => selectionController.setSelectedModel(appController.findBar(filterModel))));
   
