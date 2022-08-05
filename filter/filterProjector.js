@@ -114,7 +114,7 @@ export {filterProjector};
     return wrapper;
   };
 
-  const autoComplete = (AttrInput, AttrList, AttrCurrentListItem) => {
+  const autoComplete = (AttrInput, AttrList) => {
     const wrapper = document.createElement('DIV');
     const inputElement = document.createElement('INPUT');
     const autoCompleteWrapper = document.createElement('DIV');
@@ -154,7 +154,7 @@ export {filterProjector};
   }
 
   filter.appendChild(title('Was ist dir wichtig?', 1));
-  filter.appendChild(autoComplete(filterModel.currentAddress, filterModel.locationList, filterModel.location));
+  filter.appendChild(autoComplete(filterModel.currentAddress, filterModel.locationList));
   filter.appendChild(rangeInput(filterModel.distance, 0, 10));
   filter.appendChild(buttonList(label('Drinkpräverenzen', 'drink-filter'), filterModel.drinkPref));
   filter.appendChild(button('Finde Bar', () => selectionController.setSelectedModel(appController.findBar(filterModel))));

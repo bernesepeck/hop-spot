@@ -128,12 +128,16 @@ const AppController = (locationController, filterModel) => {
   }
 
   /**
-   * Findet zufällig eine Bar mit den Filterkriterien
+   * Returns randomly a bar from the list which matches the current set filters
+   * @return {Bar}
    */
   const findBar = () => {
-    const filteredBars = barList.filter(b => JSON.stringify(filterModel.drinkPref.getObs(VALUE).getValue()) === JSON.stringify(b.getMenu()) && filterModel.distance.getObs(VALUE).getValue() >= getDistance(getCurrentLocation(), b.getCoordinates()))
+    const currentLocation = locationController.getSelectedLocationModel();
+    const compareDrinkpref = (bar) => JSON.stringify(filterModel.drinkPref.getObs(VALUE).getValue()) === JSON.stringify(bar.getMenu());
+    const compareDistance = (bar) => filterModel.distance.getObs(VALUE).getValue() >= getDistance(currentLocation.location, bar.getCoordinates());
+    const filteredBars = barList.filter(b => compareDrinkpref(b) && compareDistance(b));
     const bar =  filteredBars[Math.floor(Math.random()*barList.length)];
-    bar?.setDistance(getDistance(bar.getCoordinates(), getCurrentLocation()));
+    bar?.setDistance(getDistance(bar.getCoordinates(), currentLocation.location));
     return bar;
   }
 

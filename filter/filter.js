@@ -29,8 +29,6 @@ const Filter = () => {
   const drinkPrefAttr = Attribute({beer: true, wine: true, cocktail: false}, 'drinkPref');
   drinkPrefAttr.getObs(LABEL).setValue('Drinkpräverenzen');
 
-  const currentLocation = Attribute('');
-
   const currentAddress = Attribute('');
   currentAddress.getObs(LABEL).setValue('Aktueller Standort');
 
@@ -39,7 +37,6 @@ const Filter = () => {
   return {
     distance: distanceAttr,
     drinkPref: drinkPrefAttr,
-    location: currentLocation,
     locationList: locationList,
     currentAddress: currentAddress
   }
