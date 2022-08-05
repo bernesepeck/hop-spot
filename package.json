@@ -1,0 +1,25 @@
+{
+  "name": "hop-spot",
+  "version": "1.0.0",
+  "description": "This is just to install dependancies for eslint and prettier. The Hop-spot app has no dependancies.",
+  "main": " ",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bernesepeck/hop-spot.git"
+  },
+  "author": "Mirjam Thomet",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bernesepeck/hop-spot/issues"
+  },
+  "homepage": "https://github.com/bernesepeck/hop-spot#readme",
+  "devDependencies": {
+    "eslint": "^8.21.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "prettier": "^2.7.1"
+  }
+}
