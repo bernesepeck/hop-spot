@@ -15,12 +15,16 @@ const Filter = () => {
   const drinkPrefAttr = Attribute({beer: true, wine: true, cocktail: false}, 'drinkPref');
   drinkPrefAttr.getObs(LABEL).setValue('Drinkpräverenzen');
 
-  const currentLocation = Attribute({lag: null, lng: null});
+  const currentLocation = Attribute('');
   currentLocation.getObs(LABEL).setValue('Aktueller Standort');
+
+  const locationList = Attribute([]);
 
   return {
     distance: distanceAttr,
-    drinkPref: drinkPrefAttr
+    drinkPref: drinkPrefAttr,
+    location: currentLocation,
+    locationList: locationList
   }
 }
 

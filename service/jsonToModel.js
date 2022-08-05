@@ -7,6 +7,7 @@ const toBar = (jsonDev, idx) => (
         title: jsonDev.title, 
         openTimes: jsonDev.openTimes,
         coordinates: jsonDev.coordinates,
-        menu: jsonDev.menu
+        menu: jsonDev.menu,
+        image: jsonDev.image
     }
 );

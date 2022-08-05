@@ -4,6 +4,7 @@
 
 import { Observable } from './common/kolibri/observable.js';
 import { VALUE } from './common/kolibri/presentationModel.js';
+import { locationService } from './service/locationService.js';
 
 export {AppController}
 
@@ -29,6 +30,7 @@ const AppController = () => {
     let coordinates = {lat: 0, lng: 0};
     let distance = 0;
     let menu = {beer: false, wine: false, food: false}
+    let image = '';
 
     return {
       getTitle: () => title,
@@ -40,7 +42,9 @@ const AppController = () => {
       getDistance: () => distance, 
       setDistance: (value) => distance = value,
       getMenu: () => menu, 
-      setMenu: (value) => menu = value
+      setMenu: (value) => menu = value,
+      getImage: () => image,
+      setImage: (value) => image = value
     }
   }
 /**@type {Array<Bar>} */
@@ -55,6 +59,7 @@ const AppController = () => {
     bar.setOpenTimes(barData.openTimes);
     bar.setCoordinates(barData.coordinates);
     bar.setMenu(barData.menu);
+    bar.setImage(barData.image);
     barList.push(bar);
   };
 
@@ -83,7 +88,6 @@ const AppController = () => {
   const getDistance = (location1, location2) => {
     const loc1 = {...location1};
     const loc2 = {...location2};
-    console.log(loc1, loc2);
     loc1.lat = loc1.lat * Math.PI / 180;
     loc1.lng = loc1.lng * Math.PI / 180;
     loc2.lat = loc2.lat * Math.PI / 180;
@@ -132,7 +136,18 @@ const AppController = () => {
     return bar;
   }
 
-
+  /**
+   * Calls the location auto complete service with the value
+   * @param {string} value
+   * @param {FilterModel} filterModel 
+   */
+  const onLocationSearched = (value, filterModel) => {
+    const updateLocationList = value => filterModel.locationList.getObs(VALUE).setValue(value);
+    if(value.length > 3) {
+      //TODO: Timeout funktioniert nicht, hier muss ein debounce sein. 
+      setTimeout(locationService().getLocationAutoCompleteList(value, updateLocationList), 500);
+    }
+  }
 
   return {
     addBar:             addBar,
@@ -141,6 +156,7 @@ const AppController = () => {
     onBarRemove:        barList.onDel,
     getCurrentLocation: getCurrentLocation,
     findBar:            findBar,
-    selectedBar:        selectedBar
+    selectedBar:        selectedBar,
+    onLocationSearched: onLocationSearched
 }
 }

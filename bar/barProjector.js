@@ -11,7 +11,9 @@ export {barProjector};
  */
 const barProjector = (selectionController, rootElement, bar) => {
   const barElement = document.createElement("DIV");
-  barElement.setAttribute('class', 'bar-wrapper');
+  barElement.setAttribute('class', 'bar');
+  const dataWrapperElement = document.createElement("DIV");
+  dataWrapperElement.setAttribute('class', 'data-wrapper');
 
   /**
    * renders a data item, which is label and value
@@ -30,14 +32,34 @@ const barProjector = (selectionController, rootElement, bar) => {
     return dataItem;
   }
 
-  const dateToTimeString = (date) => `${date.getHours()}:${date.getMinutes()}`
+  const image = (src) => {
+    const image = document.createElement("IMG");
+    image.setAttribute('src', src);
+    return image;
+  }
 
+  /**
+   * Converts date to HH:mm
+   * @param {Date} date 
+   * @returns {string} time in HH:mm
+   */
+  const dateToTimeString = (date) => date.toTimeString().split(' ')[0].slice(0, -3);
+
+  /**
+   * Converts date string to number
+   * @param {Date} stringDate 
+   * @returns 
+   */
   const dateStringToDate = (stringDate) => new Date(Number(stringDate));
+
+  const roundDecimal = (number) => Math.round(number * 100) / 100;
   
 
   barElement.appendChild(title(bar.getTitle(), 1));
-  barElement.appendChild(dataItem('Öffnungszeiten', `${dateToTimeString(dateStringToDate(bar.getOpenTimes().from))}- ${dateToTimeString(dateStringToDate(bar.getOpenTimes().to))}`));
-  barElement.appendChild(dataItem('Distanz', bar.getDistance()));
+  barElement.appendChild(image(bar.getImage()));
+  dataWrapperElement.appendChild(dataItem('Öffnungszeiten', `${dateToTimeString(dateStringToDate(bar.getOpenTimes().from))} - ${dateToTimeString(dateStringToDate(bar.getOpenTimes().to))}`));
+  dataWrapperElement.appendChild(dataItem('Distanz', `${roundDecimal(bar.getDistance())}km`));
+  barElement.appendChild(dataWrapperElement);
  
   barElement.appendChild(button('Nächste Bar', () => selectionController(null)))
   rootElement.replaceChildren(barElement);

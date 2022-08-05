@@ -186,6 +186,13 @@ label {
 }
 
 /* BAR Site Styles */ 
+.bar {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: calc(var(--spacing) * 4);
+}
+
 .bar img {
   max-width: 100%;
 }

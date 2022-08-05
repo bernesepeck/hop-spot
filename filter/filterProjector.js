@@ -90,7 +90,6 @@ export {filterProjector};
    * @return {HTMLElement}
    */
   const rangeInput = (Attr, min = 0, max = 100) => {
-    console.log(min, max);
     const wrapper = document.createElement('DIV');
     const rangeInput = document.createElement("INPUT");
     rangeInput.setAttribute('type', 'range');
@@ -114,7 +113,38 @@ export {filterProjector};
     return wrapper;
   };
 
+  const autoComplete = (AttrInput, AttrList) => {
+    const wrapper = document.createElement('DIV');
+    const inputElement = document.createElement('INPUT');
+    const listElement = document.createElement('DIV');
+    inputElement.setAttribute('type', 'text');
+    inputElement.setAttribute('id', AttrInput.getQualifier());
+
+    const labelElement = label(AttrInput.getObs(LABEL).getValue(), AttrInput.getQualifier());
+    //binding data to input
+    bindTextInput(AttrInput, inputElement, labelElement);
+
+    //Bind Event to Input to get locations for the autocomplete list
+    inputElement.addEventListener('input', () => appController.onLocationSearched(inputElement.value, filterModel));
+    //Add the auto complete list
+    AttrList.getObs(VALUE).onChange(value => {
+      listElement.innerHTML = '';
+      listElement.setAttribute('class', 'autocomplete-list');
+      value.forEach(itemText => {
+        const item = document.createElement('LI');
+        item.textContent = itemText;
+        listElement.appendChild(item);
+      })
+      wrapper.appendChild(listElement);
+    });
+
+    wrapper.appendChild(labelElement);
+    wrapper.appendChild(inputElement)
+    return wrapper;
+  }
+
   filter.appendChild(title('Was ist dir wichtig?', 1));
+  filter.appendChild(autoComplete(filterModel.location, filterModel.locationList));
   filter.appendChild(rangeInput(filterModel.distance, 0, 10));
   filter.appendChild(buttonList(label('Drinkpräverenzen', 'drink-filter'), filterModel.drinkPref));
   filter.appendChild(button('Finde Bar', () => selectionController.setSelectedModel(appController.findBar(filterModel))));
