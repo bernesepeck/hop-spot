@@ -61,6 +61,6 @@ const barProjector = (selectionController, rootElement, bar) => {
   dataWrapperElement.appendChild(dataItem('Distanz', `${roundDecimal(bar.getDistance())}km`));
   barElement.appendChild(dataWrapperElement);
  
-  barElement.appendChild(button('Nächste Bar', () => selectionController(null)))
+  barElement.appendChild(button('Nächste Bar', () => selectionController.clearSelection()));
   rootElement.replaceChildren(barElement);
 }

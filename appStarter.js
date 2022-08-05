@@ -4,13 +4,15 @@ import { Filter, FilterView } from './filter/filter.js';
 import { SelectionController } from './bar/controller.js';
 import { BarView } from './bar/bar.js';
 import { LocationController } from './filter/controller.js';
+import { VALUE } from './common/kolibri/presentationModel.js';
 
 const rootElement = document.getElementById('site-wrapper');
 
 const filterModel = Filter();
 const selectionController = SelectionController(null);
 const locationController = LocationController(null);
-const appController = AppController(locationController, filterModel);
+const appController = AppController(locationController, filterModel, selectionController);
+
 
 BarView(selectionController, rootElement);
 

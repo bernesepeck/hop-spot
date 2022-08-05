@@ -51,4 +51,9 @@ const Filter = () => {
 const FilterView = (appController, rootElement, filterModel, selectionController, locationController) => {
   const render = () => filterProjector(filterModel, appController, rootElement, selectionController, locationController);
   render();
+  selectionController.onModelSelected((value) => {
+    if(!value) {
+      render();
+    }
+  })
 }

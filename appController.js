@@ -13,9 +13,10 @@ export {AppController}
  * AppController
  * @param {LocationControllerType} locationController
  * @param {FilterModel} filterModel
+ * @param {SelectionController} selectionController
  * @returns 
  */
-const AppController = (locationController, filterModel) => {
+const AppController = (locationController, filterModel, selectionController) => {
 
   /**
    * 
@@ -135,16 +136,21 @@ const AppController = (locationController, filterModel) => {
 
   /**
    * Returns randomly a bar from the list which matches the current set filters
-   * @return {Bar}
+   * @param onlyCheck
    */
-  const findBar = () => {
+  const findBar = (onlyCheck = false) => {
     const currentLocation = locationController.getSelectedLocationModel();
     const compareDrinkpref = (bar) => JSON.stringify(filterModel.drinkPref.getObs(VALUE).getValue()) === JSON.stringify(bar.getMenu());
-    const compareDistance = (bar) => filterModel.distance.getObs(VALUE).getValue() >= getDistance(currentLocation.location, bar.getCoordinates());
+    const compareDistance = (bar) => filterModel.distance.getObs(VALUE).getValue() >= getDistance(currentLocation?.location, bar.getCoordinates());
     const filteredBars = barList.filter(b => compareDrinkpref(b) && compareDistance(b));
     const bar =  filteredBars[Math.floor(Math.random()*barList.length)];
-    bar?.setDistance(getDistance(bar.getCoordinates(), currentLocation.location));
-    return bar;
+    bar?.setDistance(getDistance(bar.getCoordinates(), currentLocation?.location));
+    if(bar) {
+      if(!onlyCheck) selectionController.setSelectedModel(bar); 
+      selectionController.setNoBarFound(false);
+    } else {
+      selectionController.setNoBarFound(true);
+    }
   }
 
   /**
@@ -165,7 +171,12 @@ const AppController = (locationController, filterModel) => {
    * Called when the filter projector is rendered
    */
   const onMountFilterView = () => {
-    locationController.onLocationModelSelected(location => filterModel.currentAddress.setConvertedValue(location?.address ?? ''));
+    locationController.onLocationModelSelected(location => {
+      filterModel.currentAddress.setConvertedValue(location?.address ?? '');
+      findBar(true);
+    });
+    filterModel.distance.getObs(VALUE).onChange(() => findBar(true));
+    filterModel.drinkPref.getObs(VALUE).onChange(() => findBar(true));
   }
 
   return {
