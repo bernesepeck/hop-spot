@@ -10,9 +10,11 @@ export {AppController}
 
 /**
  * AppController
+ * @param {LocationControllerType} locationController
+ * @param {FilterModel} filterModel
  * @returns 
  */
-const AppController = () => {
+const AppController = (locationController, filterModel) => {
 
   /**
    * 
@@ -127,9 +129,8 @@ const AppController = () => {
 
   /**
    * Findet zufällig eine Bar mit den Filterkriterien
-   * @param {*} filterModel 
    */
-  const findBar = (filterModel) => {
+  const findBar = () => {
     const filteredBars = barList.filter(b => JSON.stringify(filterModel.drinkPref.getObs(VALUE).getValue()) === JSON.stringify(b.getMenu()) && filterModel.distance.getObs(VALUE).getValue() >= getDistance(getCurrentLocation(), b.getCoordinates()))
     const bar =  filteredBars[Math.floor(Math.random()*barList.length)];
     bar?.setDistance(getDistance(bar.getCoordinates(), getCurrentLocation()));
@@ -139,14 +140,22 @@ const AppController = () => {
   /**
    * Calls the location auto complete service with the value
    * @param {string} value
-   * @param {FilterModel} filterModel 
    */
-  const onLocationSearched = (value, filterModel) => {
+  const onLocationSearched = (value) => {
     const updateLocationList = value => filterModel.locationList.getObs(VALUE).setValue(value);
     if(value.length > 3) {
       //TODO: Timeout funktioniert nicht, hier muss ein debounce sein. 
       setTimeout(locationService().getLocationAutoCompleteList(value, updateLocationList), 500);
+    } else {
+      updateLocationList([])
     }
+  }
+
+  /**
+   * Called when the filter projector is rendered
+   */
+  const onMountFilterView = () => {
+    locationController.onLocationModelSelected(location => filterModel.currentAddress.setConvertedValue(location?.address ?? ''));
   }
 
   return {
@@ -157,6 +166,7 @@ const AppController = () => {
     getCurrentLocation: getCurrentLocation,
     findBar:            findBar,
     selectedBar:        selectedBar,
-    onLocationSearched: onLocationSearched
+    onLocationSearched: onLocationSearched,
+    onMountFilterView:  onMountFilterView
 }
 }

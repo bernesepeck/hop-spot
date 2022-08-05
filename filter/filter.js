@@ -4,8 +4,22 @@ import { filterProjector } from './filterProjector.js';
 export { Filter, FilterView };
 
 /**
- * Erstellt das Binding Model für den Filter
+ * @typedef LocationType
+ * @property {number} lat
+ * @property {number} lng
+ * 
+ * @typedef CurrentLocationType
+ * @property {LocationType} location
+ * @property {string} address
+ */
+
+/**
+ * Creates a filter model to bind input to model
  * @typedef Filter
+ * @property {number} distance in km
+ * @property {Object} drinkPref
+ * @property {CurrentLocationType} location
+ * @property {Array<CurrentLocationType>} locationList for the location auto complete
  * @returns {Filter}
  */
 const Filter = () => {
@@ -16,7 +30,9 @@ const Filter = () => {
   drinkPrefAttr.getObs(LABEL).setValue('Drinkpräverenzen');
 
   const currentLocation = Attribute('');
-  currentLocation.getObs(LABEL).setValue('Aktueller Standort');
+
+  const currentAddress = Attribute('');
+  currentAddress.getObs(LABEL).setValue('Aktueller Standort');
 
   const locationList = Attribute([]);
 
@@ -24,7 +40,8 @@ const Filter = () => {
     distance: distanceAttr,
     drinkPref: drinkPrefAttr,
     location: currentLocation,
-    locationList: locationList
+    locationList: locationList,
+    currentAddress: currentAddress
   }
 }
 
@@ -34,7 +51,7 @@ const Filter = () => {
  * @param {HTMLElement} rootElement
  * @param {selectionController} selectionController
  */
-const FilterView = (appController, rootElement, filterModel, selectionController) => {
-  const render = () => filterProjector(filterModel, appController, rootElement, selectionController);
+const FilterView = (appController, rootElement, filterModel, selectionController, locationController) => {
+  const render = () => filterProjector(filterModel, appController, rootElement, selectionController, locationController);
   render();
 }

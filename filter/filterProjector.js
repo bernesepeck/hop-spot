@@ -8,9 +8,10 @@ export {filterProjector};
  * @param filterModel
  * @param appController
  * @param {SelectionController} selectionController
+ * @param {LocationController} locationController
  * @return {HTMLElement}
  */
- const filterProjector = (filterModel, appController, rootElement, selectionController) => {
+ const filterProjector = (filterModel, appController, rootElement, selectionController, locationController) => {
   const filter = document.createElement("DIV");
   filter.setAttribute('class', 'filter-wrapper');
 
@@ -113,12 +114,16 @@ export {filterProjector};
     return wrapper;
   };
 
-  const autoComplete = (AttrInput, AttrList) => {
+  const autoComplete = (AttrInput, AttrList, AttrCurrentListItem) => {
     const wrapper = document.createElement('DIV');
     const inputElement = document.createElement('INPUT');
+    const autoCompleteWrapper = document.createElement('DIV');
     const listElement = document.createElement('DIV');
     inputElement.setAttribute('type', 'text');
     inputElement.setAttribute('id', AttrInput.getQualifier());
+    autoCompleteWrapper.setAttribute('class', 'auto-complete');
+    listElement.setAttribute('class', 'auto-complete-list');
+    
 
     const labelElement = label(AttrInput.getObs(LABEL).getValue(), AttrInput.getQualifier());
     //binding data to input
@@ -129,28 +134,34 @@ export {filterProjector};
     //Add the auto complete list
     AttrList.getObs(VALUE).onChange(value => {
       listElement.innerHTML = '';
-      listElement.setAttribute('class', 'autocomplete-list');
-      value.forEach(itemText => {
-        const item = document.createElement('LI');
-        item.textContent = itemText;
-        listElement.appendChild(item);
-      })
-      wrapper.appendChild(listElement);
+      if(value.length) {
+        listElement.style.display = 'block';
+        value.forEach(location => {
+          const item = document.createElement('LI');
+          item.addEventListener('click', () => {locationController.setSelectedLocationModel(location); listElement.style.display = 'none';});
+          item.textContent = location.address;
+          listElement.appendChild(item);
+        })
+      } else {
+        listElement.style.display = 'none';
+      }
     });
-
+    autoCompleteWrapper.appendChild(listElement);
+    autoCompleteWrapper.appendChild(inputElement);
     wrapper.appendChild(labelElement);
-    wrapper.appendChild(inputElement)
+    wrapper.appendChild(autoCompleteWrapper)
     return wrapper;
   }
 
   filter.appendChild(title('Was ist dir wichtig?', 1));
-  filter.appendChild(autoComplete(filterModel.location, filterModel.locationList));
+  filter.appendChild(autoComplete(filterModel.currentAddress, filterModel.locationList, filterModel.location));
   filter.appendChild(rangeInput(filterModel.distance, 0, 10));
   filter.appendChild(buttonList(label('Drinkpräverenzen', 'drink-filter'), filterModel.drinkPref));
   filter.appendChild(button('Finde Bar', () => selectionController.setSelectedModel(appController.findBar(filterModel))));
   
 
   rootElement.replaceChildren(filter);
+  appController.onMountFilterView();
 }
 
 
