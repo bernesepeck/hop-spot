@@ -138,11 +138,20 @@ const filterProjector = (
     return wrapper;
   };
 
+  /**
+   * Creates location auto complete
+   * @param {*} AttrInput 
+   * @param {*} AttrList 
+   * @returns 
+   */
   const autoComplete = (AttrInput, AttrList) => {
     const wrapper = document.createElement('DIV');
     const inputElement = document.createElement('INPUT');
     const autoCompleteWrapper = document.createElement('DIV');
     const listElement = document.createElement('DIV');
+    const currentLocationButton = document.createElement('BUTTON');
+    currentLocationButton.classList.add('icon-location');
+    currentLocationButton.addEventListener('click', () => appController.setCurrentUserLocation());
     inputElement.setAttribute('type', 'text');
     inputElement.setAttribute('id', AttrInput.getQualifier());
     autoCompleteWrapper.setAttribute('class', 'auto-complete');
@@ -179,6 +188,7 @@ const filterProjector = (
     });
     autoCompleteWrapper.appendChild(listElement);
     autoCompleteWrapper.appendChild(inputElement);
+    autoCompleteWrapper.appendChild(currentLocationButton);
     wrapper.appendChild(labelElement);
     wrapper.appendChild(autoCompleteWrapper);
     return wrapper;

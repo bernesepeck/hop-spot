@@ -4,6 +4,7 @@
 
 import { Observable } from './common/kolibri/observable.js';
 import { VALUE } from './common/kolibri/presentationModel.js';
+import { LocationController } from './filter/controller.js';
 import { locationService } from './service/locationService.js';
 
 export {AppController}
@@ -76,7 +77,12 @@ const AppController = (locationController, filterModel) => {
     function onError() {
         console.log('error');
     }
+    //Mock as geolocation only works with https
     return {lat:46.941130, lng: 7.430470}
+  }
+
+  const setCurrentUserLocation = () => {
+    locationController.setSelectedLocationModel({location: getCurrentLocation(), address: 'Aktueller Standort'});
   }
 
   /**
@@ -171,6 +177,7 @@ const AppController = (locationController, filterModel) => {
     findBar:            findBar,
     selectedBar:        selectedBar,
     onLocationSearched: onLocationSearched,
-    onMountFilterView:  onMountFilterView
+    onMountFilterView:  onMountFilterView,
+    setCurrentUserLocation: setCurrentUserLocation
 }
 }
