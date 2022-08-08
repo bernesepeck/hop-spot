@@ -35,6 +35,7 @@ const AppController = (locationController, filterModel, selectionController) => 
     let distance = 0;
     let menu = {beer: false, wine: false, food: false}
     let image = '';
+    let openingTimes = [];
 
     return {
       getTitle: () => title,
@@ -48,7 +49,9 @@ const AppController = (locationController, filterModel, selectionController) => 
       getMenu: () => menu, 
       setMenu: (value) => menu = value,
       getImage: () => image,
-      setImage: (value) => image = value
+      setImage: (value) => image = value,
+      getOpeningTimes: () => openingTimes,
+      setOpeningTimes: (value) => openingTimes = value
     }
   }
 /**@type {Array<Bar>} */
@@ -64,6 +67,7 @@ const AppController = (locationController, filterModel, selectionController) => 
     bar.setCoordinates(barData.coordinates);
     bar.setMenu(barData.menu);
     bar.setImage(barData.image);
+    bar.setOpeningTimes(barData.openingTimes);
     barList.push(bar);
   };
 
@@ -135,6 +139,34 @@ const AppController = (locationController, filterModel, selectionController) => 
   }
 
   /**
+   * Returns boolean if the location is open in the time provided
+   * @param {Date} date to check if location is open then
+   * @param {Array} periods when the location is open
+   * @returns  {boolean}
+   */
+  const isOpenNow = (date, periods) => {
+    if(!periods.length) return false;
+    const weekdayNow = date.getDay();
+    const todaysOpenTimes = periods?.filter(p => p.open.day === weekdayNow || p.close.day === weekdayNow);
+    if(!todaysOpenTimes.length) return false;
+    const openAt = todaysOpenTimes.find(t => t.open.day === weekdayNow)?.open.time;
+    const closeAt = todaysOpenTimes.find(t => t.close.day === weekdayNow).close.time;
+    const timeNow = dateToTimeString(date);
+    //Validate if location is open now
+    if(Number(timeNow) > Number(openAt)) {
+      return !closeAt || Number(openAt) > Number(closeAt)
+    } else if(Number(timeNow) < Number(closeAt)) {
+        return true;
+      }
+    return false;
+  }
+
+  const dateToTimeString = (date) => {
+    const addZeros = (time) => time.length < 2 ? '0'+time : time;
+    return [addZeros(date.getHours().toString()), addZeros(date.getMinutes().toString())].join('')
+  }
+
+  /**
    * Returns randomly a bar from the list which matches the current set filters
    * @param onlyCheck
    */
@@ -142,7 +174,7 @@ const AppController = (locationController, filterModel, selectionController) => 
     const currentLocation = locationController.getSelectedLocationModel();
     const compareDrinkpref = (bar) => JSON.stringify(filterModel.drinkPref.getObs(VALUE).getValue()) === JSON.stringify(bar.getMenu());
     const compareDistance = (bar) => filterModel.distance.getObs(VALUE).getValue() >= getDistance(currentLocation?.location, bar.getCoordinates());
-    const filteredBars = barList.filter(b => compareDrinkpref(b) && compareDistance(b));
+    const filteredBars = barList.filter(b => isOpenNow(new Date(), b.getOpeningTimes()) && compareDrinkpref(b) && compareDistance(b));
     const bar =  filteredBars[Math.floor(Math.random()*barList.length)];
     bar?.setDistance(getDistance(bar.getCoordinates(), currentLocation?.location));
     if(bar) {
@@ -152,6 +184,8 @@ const AppController = (locationController, filterModel, selectionController) => 
       selectionController.setNoBarFound(true);
     }
   }
+
+
 
   /**
    * Calls the location auto complete service with the value
@@ -189,6 +223,7 @@ const AppController = (locationController, filterModel, selectionController) => 
     selectedBar:        selectedBar,
     onLocationSearched: onLocationSearched,
     onMountFilterView:  onMountFilterView,
-    setCurrentUserLocation: setCurrentUserLocation
+    setCurrentUserLocation: setCurrentUserLocation,
+    isOpenNow:          isOpenNow
 }
 }

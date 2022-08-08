@@ -102,28 +102,28 @@ const filterProjector = (
 
   /**
    * Erstellt ein RangeInput
-   * @param {AttributeType<T>} Attr
+   * @param {AttributeType<T>} attr
    * @param {number} min
    * @param {number} max
    * @return {HTMLElement}
    */
-  const rangeInput = (Attr, min = 0, max = 100) => {
+  const rangeInput = (attr, min = 0, max = 100) => {
     const wrapper = document.createElement('DIV');
     const rangeInput = document.createElement('INPUT');
     rangeInput.setAttribute('type', 'range');
-    rangeInput.setAttribute('id', Attr.getQualifier());
+    rangeInput.setAttribute('id', attr.getQualifier());
     rangeInput.setAttribute('min', min);
     rangeInput.setAttribute('max', max);
 
     const labelElement = label(
-      Attr.getObs(LABEL).getValue(),
-      Attr.getQualifier()
+      attr.getObs(LABEL).getValue(),
+      attr.getQualifier()
     );
     //binding data to input
-    bindTextInput(Attr, rangeInput, labelElement);
+    bindTextInput(attr, rangeInput, labelElement);
 
     //sets the css costum property to show value when sliding the slider
-    Attr.getObs(VALUE).onChange((value) => {
+    attr.getObs(VALUE).onChange((value) => {
       const newPosition = ((value - min) * 100) / (max - min);
       rangeInput.style.setProperty('--current-value', value);
       rangeInput.style.setProperty(
