@@ -188,9 +188,13 @@ const AppController = (
    */
   const findBar = (onlyCheck = false) => {
     const currentLocation = locationController.getSelectedLocationModel();
-    const compareDrinkpref = (bar) =>
-      JSON.stringify(filterModel.drinkPref.getObs(VALUE).getValue()) ===
-      JSON.stringify(bar.getMenu());
+    const compareDrinkpref = (bar) => {
+      const filter = filterModel.drinkPref.getObs(VALUE).getValue();
+      const selectedFilter = Object.entries(filter)
+        .filter((item) => item[1])
+        .some((item) => bar.getMenu()[item[0]]);
+      return selectedFilter;
+    };
     const compareDistance = (bar) =>
       filterModel.distance.getObs(VALUE).getValue() >=
       getDistance(currentLocation?.location, bar.getCoordinates());
