@@ -1,6 +1,6 @@
-import {bars} from './bars.js';
+import { bars } from './bars.js';
 import { toBar } from './jsonToModel.js';
 
-export {loadBars};
+export { loadBars };
 
-const loadBars = () => bars.map(bar => toBar(bar));
+const loadBars = () => bars.map((bar) => toBar(bar));

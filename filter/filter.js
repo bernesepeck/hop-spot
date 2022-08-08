@@ -1,4 +1,4 @@
-import { Attribute, LABEL } from '../common/kolibri/presentationModel.js'
+import { Attribute, LABEL } from '../common/kolibri/presentationModel.js';
 import { filterProjector } from './filterProjector.js';
 
 export { Filter, FilterView };
@@ -7,7 +7,7 @@ export { Filter, FilterView };
  * @typedef LocationType
  * @property {number} lat
  * @property {number} lng
- * 
+ *
  * @typedef CurrentLocationType
  * @property {LocationType} location
  * @property {string} address
@@ -26,7 +26,10 @@ const Filter = () => {
   const distanceAttr = Attribute(1, 'distanceFilter');
   distanceAttr.getObs(LABEL).setValue('Distanz in KM');
 
-  const drinkPrefAttr = Attribute({beer: true, wine: true, cocktail: false}, 'drinkPref');
+  const drinkPrefAttr = Attribute(
+    { beer: true, wine: true, cocktail: false },
+    'drinkPref'
+  );
   drinkPrefAttr.getObs(LABEL).setValue('Drinkpräverenzen');
 
   const currentAddress = Attribute('');
@@ -38,22 +41,35 @@ const Filter = () => {
     distance: distanceAttr,
     drinkPref: drinkPrefAttr,
     locationList: locationList,
-    currentAddress: currentAddress
-  }
-}
+    currentAddress: currentAddress,
+  };
+};
 
 /**
  * renders the filter to the root element
- * @param {AppController} appController 
+ * @param {AppController} appController
  * @param {HTMLElement} rootElement
  * @param {selectionController} selectionController
  */
-const FilterView = (appController, rootElement, filterModel, selectionController, locationController) => {
-  const render = () => filterProjector(filterModel, appController, rootElement, selectionController, locationController);
+const FilterView = (
+  appController,
+  rootElement,
+  filterModel,
+  selectionController,
+  locationController
+) => {
+  const render = () =>
+    filterProjector(
+      filterModel,
+      appController,
+      rootElement,
+      selectionController,
+      locationController
+    );
   render();
   selectionController.onModelSelected((value) => {
-    if(!value) {
+    if (!value) {
       render();
     }
-  })
-}
+  });
+};

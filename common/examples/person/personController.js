@@ -4,11 +4,11 @@
  * We do it anyway to follow the canonical structure of classical MVC where
  * views only ever know the controller API, not the model directly.
  */
-import { ObservableList, Observable }   from "../../kolibri/observable.js";
-import { EDITABLE, VALUE }              from "../../kolibri/presentationModel.js"
-import { Person, reset }                from "./person.js"
+import { ObservableList, Observable } from '../../kolibri/observable.js';
+import { EDITABLE, VALUE } from '../../kolibri/presentationModel.js';
+import { Person, reset } from './person.js';
 
-export { ListController, SelectionController }
+export { ListController, SelectionController };
 
 /**
  * @typedef ListControllerType<T>
@@ -27,16 +27,15 @@ export { ListController, SelectionController }
  * @return { ListControllerType<T> }
  * @constructor
  */
-const ListController = modelConstructor => {
+const ListController = (modelConstructor) => {
+  const listModel = ObservableList([]); // observable array of models, this state is private
 
-    const listModel = ObservableList([]); // observable array of models, this state is private
-
-    return {
-        addModel        : () => listModel.add(modelConstructor()),
-        removeModel     : listModel.del,
-        onModelAdd      : listModel.onAdd,
-        onModelRemove   : listModel.onDel,
-    }
+  return {
+    addModel: () => listModel.add(modelConstructor()),
+    removeModel: listModel.del,
+    onModelAdd: listModel.onAdd,
+    onModelRemove: listModel.onDel,
+  };
 };
 
 /**
@@ -45,12 +44,12 @@ const ListController = modelConstructor => {
  * @private
  */
 const noSelection = reset(Person());
-noSelection.firstname.setQualifier("Person.none.firstname");
-noSelection.lastname .setQualifier("Person.none.lastname");
-noSelection.detailed .setQualifier("Person.none.detailed");
+noSelection.firstname.setQualifier('Person.none.firstname');
+noSelection.lastname.setQualifier('Person.none.lastname');
+noSelection.detailed.setQualifier('Person.none.detailed');
 noSelection.firstname.getObs(EDITABLE).setValue(false); // the non-selection is not editable
-noSelection.lastname .getObs(EDITABLE).setValue(false);
-noSelection.detailed .getObs(VALUE)   .setValue(false);    // detail view can fold
+noSelection.lastname.getObs(EDITABLE).setValue(false);
+noSelection.detailed.getObs(VALUE).setValue(false); // detail view can fold
 
 /**
  * @typedef SelectionControllerType<T>
@@ -70,14 +69,13 @@ noSelection.detailed .getObs(VALUE)   .setValue(false);    // detail view can fo
  * @return { SelectionControllerType<T>}
  * @constructor
  */
-const SelectionController = model => {
+const SelectionController = (model) => {
+  const selectedModelObs = Observable(model);
 
-    const selectedModelObs = Observable(model);
-
-    return {
-        setSelectedModel : selectedModelObs.setValue,
-        getSelectedModel : selectedModelObs.getValue,
-        onModelSelected  : selectedModelObs.onChange,
-        clearSelection   : () => selectedModelObs.setValue(noSelection),
-    }
+  return {
+    setSelectedModel: selectedModelObs.setValue,
+    getSelectedModel: selectedModelObs.getValue,
+    onModelSelected: selectedModelObs.onChange,
+    clearSelection: () => selectedModelObs.setValue(noSelection),
+  };
 };

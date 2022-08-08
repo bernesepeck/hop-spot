@@ -1,14 +1,13 @@
-
 import {
-    projectForm,
-    projectListItem,
-    masterClassName,
-    removeListItemForModel,
-    selectListItemForModel
-}                                           from "./instantUpdateProjector.js";
-import {ALL_ATTRIBUTE_NAMES, selectionMold} from "./person.js";
+  projectForm,
+  projectListItem,
+  masterClassName,
+  removeListItemForModel,
+  selectListItemForModel,
+} from './instantUpdateProjector.js';
+import { ALL_ATTRIBUTE_NAMES, selectionMold } from './person.js';
 
-export { projectMasterView, projectDetailView }
+export { projectMasterView, projectDetailView };
 
 /**
  * Create the master view, bind against the controllers, and return the view.
@@ -19,30 +18,38 @@ export { projectMasterView, projectDetailView }
  * @return { [HTMLDivElement] }          - master view
  */
 const projectMasterView = (listController, selectionController) => {
+  /** @type HTMLDivElement */ const rootElement = document.createElement('div');
 
-    /** @type HTMLDivElement */ const rootElement = document.createElement("div");
+  const renderRow = (person) => {
+    const rowElements = projectListItem(
+      listController,
+      selectionController,
+      person,
+      ALL_ATTRIBUTE_NAMES
+    );
+    rootElement.append(...rowElements);
+    selectionController.setSelectedModel(person);
+  };
 
-    const renderRow = person => {
-        const rowElements = projectListItem(listController, selectionController, person, ALL_ATTRIBUTE_NAMES);
-        rootElement.append(...rowElements);
-        selectionController.setSelectedModel(person);
-    }
+  rootElement.classList.add(masterClassName);
+  rootElement.style['grid-template-columns'] =
+    '2em repeat(' + ALL_ATTRIBUTE_NAMES.length + ', auto);';
 
-    rootElement.classList.add(masterClassName);
-    rootElement.style['grid-template-columns'] = '2em repeat(' + ALL_ATTRIBUTE_NAMES.length + ', auto);';
+  // binding
+  listController.onModelAdd(renderRow);
+  listController.onModelRemove((removedModel) => {
+    removeListItemForModel(ALL_ATTRIBUTE_NAMES, rootElement)(removedModel);
+    ALL_ATTRIBUTE_NAMES.forEach((name) =>
+      removedModel[name].setQualifier(undefined)
+    ); // remove model attributes from model world
+    selectionController.clearSelection();
+  });
+  selectionController.onModelSelected(
+    selectListItemForModel(ALL_ATTRIBUTE_NAMES, rootElement)
+  );
 
-    // binding
-    listController.onModelAdd(renderRow);
-    listController.onModelRemove( removedModel => {
-        removeListItemForModel(ALL_ATTRIBUTE_NAMES, rootElement)(removedModel);
-        ALL_ATTRIBUTE_NAMES.forEach( name => removedModel[name].setQualifier(undefined)); // remove model attributes from model world
-        selectionController.clearSelection();
-    });
-    selectionController.onModelSelected(selectListItemForModel(ALL_ATTRIBUTE_NAMES, rootElement));
-
-    return [rootElement];
+  return [rootElement];
 };
-
 
 /**
  * Create the detail view, bind against the detail controller, and return the view.
@@ -53,16 +60,20 @@ const projectMasterView = (listController, selectionController) => {
  * @return { [HTMLFormElement] }          - master view
  */
 const projectDetailView = (selectionController, detailCard) => {
+  const form = projectForm(
+    selectionController,
+    detailCard,
+    selectionMold,
+    ALL_ATTRIBUTE_NAMES
+  ); // only once, view is stable, binding is stable
 
-    const form = projectForm(selectionController, detailCard, selectionMold, ALL_ATTRIBUTE_NAMES); // only once, view is stable, binding is stable
+  selectionController.onModelSelected((selectedPersonModel) =>
+    [...ALL_ATTRIBUTE_NAMES, 'detailed'].forEach((name) =>
+      selectionMold[name].setQualifier(selectedPersonModel[name].getQualifier())
+    )
+  );
 
-    selectionController.onModelSelected( selectedPersonModel =>
-        [...ALL_ATTRIBUTE_NAMES, "detailed"].forEach( name =>
-            selectionMold[name].setQualifier(selectedPersonModel[name].getQualifier())
-        )
-    );
+  selectionController.clearSelection();
 
-    selectionController.clearSelection();
-
-    return form;
+  return form;
 };

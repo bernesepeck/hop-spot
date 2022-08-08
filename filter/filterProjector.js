@@ -57,7 +57,7 @@ const filterProjector = (
   const bindButtonGroup = (Attr, buttonGroup) => {
     Array.from(buttonGroup.children).forEach((b) =>
       b.addEventListener('click', (event) => {
-        const value = {...Attr.getObs(VALUE).getValue()};
+        const value = { ...Attr.getObs(VALUE).getValue() };
         const key = event.currentTarget.id.replace(
           `${Attr.getQualifier()}-`,
           ''
@@ -84,7 +84,7 @@ const filterProjector = (
     const buttonGroup = document.createElement('DIV');
     buttonGroup.setAttribute('class', 'button-list');
     const buttons = [];
-    const attrValue = {...Attr.getObs(VALUE).getValue()};
+    const attrValue = { ...Attr.getObs(VALUE).getValue() };
     Object.keys(attrValue).forEach((key) => {
       const buttonWrapper = document.createElement('DIV');
       buttonWrapper.innerHTML = `<button id="${Attr.getQualifier()}-${key}" class="icon-button ${
@@ -139,9 +139,9 @@ const filterProjector = (
 
   /**
    * Creates location auto complete
-   * @param {*} AttrInput 
-   * @param {*} AttrList 
-   * @returns 
+   * @param {*} AttrInput
+   * @param {*} AttrList
+   * @returns
    */
   const autoComplete = (AttrInput, AttrList) => {
     const wrapper = document.createElement('DIV');
@@ -150,7 +150,9 @@ const filterProjector = (
     const listElement = document.createElement('DIV');
     const currentLocationButton = document.createElement('BUTTON');
     currentLocationButton.classList.add('icon-location');
-    currentLocationButton.addEventListener('click', () => appController.setCurrentUserLocation());
+    currentLocationButton.addEventListener('click', () =>
+      appController.setCurrentUserLocation()
+    );
     inputElement.setAttribute('type', 'text');
     inputElement.setAttribute('id', AttrInput.getQualifier());
     autoCompleteWrapper.setAttribute('class', 'auto-complete');
@@ -195,38 +197,42 @@ const filterProjector = (
 
   /**
    * Toggelt die Error Message
-   * @param {HTMLElement} button 
-   * @param {boolean} showError 
-   * @param {HTMLElement} errorElement 
+   * @param {HTMLElement} button
+   * @param {boolean} showError
+   * @param {HTMLElement} errorElement
    */
   const toggleError = (button, showError, errorElement) => {
-    if(showError) {
+    if (showError) {
       errorElement.textContent = 'Keine Bar mit diesen Filtern vorhanden';
       button.setAttribute('disabled', true);
     } else {
       errorElement.textContent = '';
       button.removeAttribute('disabled');
     }
-  }
+  };
 
   const errorMessage = () => {
     const errorMessage = document.createElement('SPAN');
     return errorMessage;
-  }
+  };
 
   filter.appendChild(title('Was ist dir wichtig?', 1));
-  filter.appendChild(autoComplete(filterModel.currentAddress, filterModel.locationList));
+  filter.appendChild(
+    autoComplete(filterModel.currentAddress, filterModel.locationList)
+  );
   filter.appendChild(rangeInput(filterModel.distance, 0, 10));
   filter.appendChild(
     buttonList(label('Drinkpräverenzen', 'drink-filter'), filterModel.drinkPref)
   );
 
-  const findBarButton = button('Finde Bar', () => appController.findBar())
+  const findBarButton = button('Finde Bar', () => appController.findBar());
   const errorMessageElement = errorMessage();
   filter.appendChild(errorMessageElement);
   filter.appendChild(findBarButton);
-  
-  selectionController.onNoBarFoundChange((isBar) => toggleError(findBarButton, isBar, errorMessageElement));
+
+  selectionController.onNoBarFoundChange((isBar) =>
+    toggleError(findBarButton, isBar, errorMessageElement)
+  );
 
   rootElement.replaceChildren(filter);
   appController.onMountFilterView();

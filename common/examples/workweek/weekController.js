@@ -4,10 +4,10 @@
  * Collaborates with {@link DayController}.
  */
 
-import {Attribute, VALUE} from "../../kolibri/presentationModel.js";
-import "../../kolibri/util/array.js"
+import { Attribute, VALUE } from '../../kolibri/presentationModel.js';
+import '../../kolibri/util/array.js';
 
-export { WeekController }
+export { WeekController };
 
 /** @typedef  WeekModelType
  *  @property { AttributeType<Number> } total - working minutes in this week
@@ -24,8 +24,8 @@ export { WeekController }
  * @constructor
  */
 const WeekModel = () => {
-    /** @type AttributeType<Number> */ const total = Attribute(0); // total minutes in this week
-    return /** @type WeekModelType */ { total };
+  /** @type AttributeType<Number> */ const total = Attribute(0); // total minutes in this week
+  return /** @type WeekModelType */ { total };
 };
 
 /**
@@ -41,19 +41,19 @@ const WeekModel = () => {
  * @constructor
  */
 const WeekController = () => {
-    const { total } = WeekModel();
-    const dayControllers = [];
+  const { total } = WeekModel();
+  const dayControllers = [];
 
-    const sumOfDayTotals = () => dayControllers.sum(it => it.getTotal());
-    const updateWeekTotal = _ => total.setConvertedValue(sumOfDayTotals());
+  const sumOfDayTotals = () => dayControllers.sum((it) => it.getTotal());
+  const updateWeekTotal = (_) => total.setConvertedValue(sumOfDayTotals());
 
-    const addDayController = dayController => {
-        dayControllers.push(dayController);
-        dayController.onTotalChanged(updateWeekTotal);
-    }
+  const addDayController = (dayController) => {
+    dayControllers.push(dayController);
+    dayController.onTotalChanged(updateWeekTotal);
+  };
 
-    return {
-        addDayController,
-        onTotalWeekMinutesChanged : total.getObs(VALUE).onChange
-    }
+  return {
+    addDayController,
+    onTotalWeekMinutesChanged: total.getObs(VALUE).onChange,
+  };
 };
