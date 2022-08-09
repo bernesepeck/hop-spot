@@ -1,7 +1,7 @@
+// @ts-nocheck
+import './util/array.js';
 
-import "./util/array.js"
-
-export {Observable, ObservableList}
+export { Observable, ObservableList };
 
 /**
  * @callback onValueChangeCallback<T>
@@ -20,7 +20,7 @@ export {Observable, ObservableList}
  * listeners that do not change after setup.
  * @typedef IObservable<T>
  * @template T
- * @impure   Observables change their inner state (value) and maintain a list of observers that changes over time.    
+ * @impure   Observables change their inner state (value) and maintain a list of observers that changes over time.
  * @property { ()  => T }   getValue - a function that returns the current value
  * @property { (T) => void} setValue - a function that sets a new value, calling all registered {@link onValueChangeCallback}s
  * @property { (callback: onValueChangeCallback<T>) => void } onChange -
@@ -34,33 +34,32 @@ export {Observable, ObservableList}
  * @template T
  * @param    {!T} value      - the initial value to set. Mandatory.
  * @returns  { IObservable<T> }
- * @constructor
  * @example
  * const obs = Observable("");
  * obs.onChange(val => console.log(val));
  * obs.setValue("some other value");
  */
-const Observable = value => {
-    const listeners = [];
-    return {
-        onChange: callback => {
-            listeners.push(callback);
-            callback(value, value);
-        },
-        getValue: ()       => value,
-        setValue: newValue => {
-            if (value === newValue) return;
-            const oldValue = value;
-            value = newValue;
-            listeners.forEach(callback => {
-                if (value === newValue) { // pre-ordered listeners might have changed this and thus the callback no longer applies
-                    callback(value, oldValue);
-                }
-            });
+const Observable = (value) => {
+  const listeners = [];
+  return {
+    onChange: (callback) => {
+      listeners.push(callback);
+      callback(value, value);
+    },
+    getValue: () => value,
+    setValue: (newValue) => {
+      if (value === newValue) return;
+      const oldValue = value;
+      value = newValue;
+      listeners.forEach((callback) => {
+        if (value === newValue) {
+          // pre-ordered listeners might have changed this and thus the callback no longer applies
+          callback(value, oldValue);
         }
-    }
+      });
+    },
+  };
 };
-
 
 /**
  * @callback observableListCallback
@@ -83,7 +82,7 @@ const Observable = value => {
  * Observers that are still registered are not garbage collected before the observable list itself is collected.
  * @typedef IObservableList
  * @template T
- * @impure   Observables change their inner decorated list and maintain two lists of observers that changes over time.  
+ * @impure   Observables change their inner decorated list and maintain two lists of observers that changes over time.
  * @property { (observableListCallback) => void }  onAdd - register an observer that is called whenever an item is added.
  * @property { (observableListCallback) => void }  onDel - register an observer that is called whenever an item is added.
  * @property { (T) => void }  add - add an item to the observable list and notify the observers. Modifies the list.
@@ -106,27 +105,32 @@ const Observable = value => {
  * list.onAdd( item => console.log(item));
  * list.add(1);
  */
-const ObservableList = list => {
-    const addListeners = [];
-    const delListeners = [];
-    const removeAddListener    = addListener => addListeners.removeItem(addListener);
-    const removeDeleteListener = delListener => delListeners.removeItem(delListener);
+const ObservableList = (list) => {
+  const addListeners = [];
+  const delListeners = [];
+  const removeAddListener = (addListener) =>
+    addListeners.removeItem(addListener);
+  const removeDeleteListener = (delListener) =>
+    delListeners.removeItem(delListener);
 
-    return {
-        onAdd: listener => addListeners.push(listener),
-        onDel: listener => delListeners.push(listener),
-        add: item => {
-            list.push(item);
-            addListeners.forEach( listener => listener(item))
-        },
-        del: item => {
-            list.removeItem(item);
-            const safeIterate = [...delListeners]; // shallow copy as we might change the listeners array while iterating
-            safeIterate.forEach( listener => listener(item, () => removeDeleteListener(listener) ));
-        },
-        removeAddListener,
-        removeDeleteListener,
-        count:   ()   => list.length,
-        countIf: pred => list.reduce( (sum, item) => pred(item) ? sum + 1 : sum, 0)
-    }
+  return {
+    onAdd: (listener) => addListeners.push(listener),
+    onDel: (listener) => delListeners.push(listener),
+    add: (item) => {
+      list.push(item);
+      addListeners.forEach((listener) => listener(item));
+    },
+    del: (item) => {
+      list.removeItem(item);
+      const safeIterate = [...delListeners]; // shallow copy as we might change the listeners array while iterating
+      safeIterate.forEach((listener) =>
+        listener(item, () => removeDeleteListener(listener))
+      );
+    },
+    removeAddListener,
+    removeDeleteListener,
+    count: () => list.length,
+    countIf: (pred) =>
+      list.reduce((sum, item) => (pred(item) ? sum + 1 : sum), 0),
+  };
 };

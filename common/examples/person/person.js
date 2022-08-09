@@ -1,3 +1,4 @@
+// @ts-nocheck
 import {
   Attribute,
   EDITABLE,
@@ -5,6 +6,7 @@ import {
   TYPE,
   VALUE,
   VALID,
+  AttributeType,
 } from '../../kolibri/presentationModel.js';
 
 export { Person, reset, ALL_ATTRIBUTE_NAMES, selectionMold };
@@ -39,21 +41,21 @@ let idCounter = 0;
 const Person = () => {
   // facade
   const id = idCounter++;
-  /** @type AttributeType<String> */
+  /** @type {AttributeType<String>} */
   const firstnameAttr = Attribute('John', `Person.${id}.firstname`);
   firstnameAttr.getObs(LABEL).setValue('First Name');
   firstnameAttr.getObs(TYPE).setValue('text');
   firstnameAttr.getObs(EDITABLE).setValue(true);
   firstnameAttr.getObs(VALID).setValue(true);
 
-  /** @type AttributeType<String> */
+  /** @type {AttributeType<String>} */
   const lastnameAttr = Attribute('Doe', `Person.${id}.lastname`);
   lastnameAttr.getObs(LABEL).setValue('Last Name');
   lastnameAttr.getObs(TYPE).setValue('text');
   lastnameAttr.getObs(EDITABLE).setValue(true);
   lastnameAttr.getObs(VALID).setValue(true);
 
-  /** @type AttributeType<Boolean> */
+  /** @type {AttributeType<Boolean>} */
   const detailedAttr = Attribute(true, `Person.${id}.detailed`);
 
   lastnameAttr.setConverter((input) => input.toUpperCase()); // enable for playing around

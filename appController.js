@@ -2,69 +2,57 @@
  * @module AppController
  */
 
+import { Bar } from './bar/controller.js';
 import { Observable } from './common/kolibri/observable.js';
 import { VALUE } from './common/kolibri/presentationModel.js';
-import { LocationController } from './filter/controller.js';
 import { locationService } from './service/locationService.js';
 
 export { AppController };
 
 /**
+ * @typedef SelectedBarType
+ * @property {() => import('./bar/controller.js').BarType} getSelectedBar
+ * @property {(bar: import('./bar/controller.js').BarType) => {}} setSelectedBar
+ */
+
+/**
+ * @typedef BarDataType
+ * @property {string} title
+ * @property {import('./bar/controller.js').OpenTimesType} openTimes
+ * @property {import('./filter/controller.js').LocationType} coordinates
+ * @property {import('./bar/controller.js').MenuType} menu
+ * @property {string} image
+ * @property {import('./bar/controller.js').OpeningTimesType[]} openingTimes
+ */
+
+/**
+ * @typedef AppControllerType
+ * @property {(bar: BarDataType) => void} addBar
+ * @property {() => import('./filter/controller.js').LocationType} getCurrentLocation
+ * @property {(onlyCheck: Boolean) => void} findBar
+ * @property {() => SelectedBarType} selectedBar
+ * @property {(searchString: string) => void} onLocationSearched
+ * @property {() => void} onMountFilterView
+ * @property {() => void} setCurrentUserLocation
+ */
+
+/**
  * AppController
- * @param {LocationControllerType} locationController
- * @param {FilterModel} filterModel
- * @param {SelectionController} selectionController
- * @returns
+ * @param {import('./filter/controller.js').LocationControllerType} locationController
+ * @param {import('./filter/filter.js').FilterType} filterModel
+ * @param {import('./bar/controller.js').SelectionControllerType} selectionController
+ * @returns {AppControllerType}
  */
 const AppController = (
   locationController,
   filterModel,
   selectionController
 ) => {
-  /**
-   *
-   * @typedef Bar
-   * @property {Function} getTitle
-   * @property {Function} getOpenTimes
-   * @property {Function} getCoordinates
-   * @property {Function} getDistance
-   * @property {Function} getMenu
-   * @returns {Bar}
-   */
-  const Bar = () => {
-    let title = '';
-    let openTimes = {
-      from: new Date(new Date().setHours(0, 0, 0, 0)),
-      to: new Date(new Date().setHours(0, 0, 0, 0)),
-    };
-    let coordinates = { lat: 0, lng: 0 };
-    let distance = 0;
-    let menu = { beer: false, wine: false, food: false };
-    let image = '';
-    let openingTimes = [];
-
-    return {
-      getTitle: () => title,
-      setTitle: (value) => (title = value),
-      getOpenTimes: () => openTimes,
-      setOpenTimes: (value) => (openTimes = value),
-      getCoordinates: () => coordinates,
-      setCoordinates: (value) => (coordinates = value),
-      getDistance: () => distance,
-      setDistance: (value) => (distance = value),
-      getMenu: () => menu,
-      setMenu: (value) => (menu = value),
-      getImage: () => image,
-      setImage: (value) => (image = value),
-      getOpeningTimes: () => openingTimes,
-      setOpeningTimes: (value) => (openingTimes = value),
-    };
-  };
-  /**@type {Array<Bar>} */
+  /**@type {Array<import('./bar/controller.js').BarType>} */
   const barList = [];
 
   /**
-   * @param {Bar} barData
+   * @param {BarDataType} barData
    * */
   const addBar = (barData) => {
     const bar = Bar();
@@ -77,6 +65,10 @@ const AppController = (
     barList.push(bar);
   };
 
+  /**
+   * Gets the current user position with the navigator API
+   * @returns {import('./filter/controller.js').LocationType}
+   */
   const getCurrentLocation = () => {
     navigator.geolocation.getCurrentPosition(onSuccess, onError);
     // handle success case
@@ -100,11 +92,9 @@ const AppController = (
   };
 
   /**
-   * @typedef {Object} Location
-   * @property {number} lag
-   * @property {number} lng
-   * @param {Location} location1
-   * @param {Location} location2
+   *
+   * @param {import('./filter/controller.js').LocationType} location1
+   * @param {import('./filter/controller.js').LocationType} location2
    * @return {number} distance
    */
   const getDistance = (location1, location2) => {
@@ -133,13 +123,12 @@ const AppController = (
 
   /**
    * The current selectedBar
-   * @returns {Observable<Bar>}
+   * @returns {SelectedBarType}
    */
   const selectedBar = () => {
-    /**@type {Observable<Bar>} */
-    const selectedBar = Observable();
-    getSelectedBar = () => selectedBar.getValue();
-    setSelectedBar = (bar) => selectedBar.setValue(bar);
+    const selectedBar = Observable({});
+    const getSelectedBar = () => selectedBar.getValue();
+    const setSelectedBar = (bar) => selectedBar.setValue(bar);
 
     return {
       getSelectedBar: getSelectedBar,
@@ -224,14 +213,7 @@ const AppController = (
     const updateLocationList = (value) =>
       filterModel.locationList.getObs(VALUE).setValue(value);
     if (value.length > 3) {
-      //TODO: Timeout funktioniert nicht, hier muss ein debounce sein.
-      setTimeout(
-        locationService().getLocationAutoCompleteList(
-          value,
-          updateLocationList
-        ),
-        500
-      );
+      locationService().getLocationAutoCompleteList(value, updateLocationList);
     } else {
       updateLocationList([]);
     }
@@ -251,15 +233,11 @@ const AppController = (
 
   return {
     addBar: addBar,
-    removeBar: barList.del,
-    onBarAdd: barList.onAdd,
-    onBarRemove: barList.onDel,
     getCurrentLocation: getCurrentLocation,
     findBar: findBar,
     selectedBar: selectedBar,
     onLocationSearched: onLocationSearched,
     onMountFilterView: onMountFilterView,
     setCurrentUserLocation: setCurrentUserLocation,
-    isOpenNow: isOpenNow,
   };
 };

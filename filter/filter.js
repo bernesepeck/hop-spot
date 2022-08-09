@@ -4,25 +4,30 @@ import { filterProjector } from './filterProjector.js';
 export { Filter, FilterView };
 
 /**
- * @typedef LocationType
- * @property {number} lat
- * @property {number} lng
- *
+ * Type for the Current Location
  * @typedef CurrentLocationType
- * @property {LocationType} location
+ * @property {import('./controller.js').LocationType} location
  * @property {string} address
  */
 
 /**
+ * @typedef DrinkPrefType
+ * @property {boolean} beer
+ * @property {boolean} wine
+ * @property {boolean} cocktail
+ */
+
+/**
  * Creates a filter model to bind input to model
- * @typedef Filter
- * @property {number} distance in km
- * @property {Object} drinkPref
- * @property {CurrentLocationType} location
- * @property {Array<CurrentLocationType>} locationList for the location auto complete
- * @returns {Filter}
+ * @typedef FilterType
+ * @property {import('../common/kolibri/presentationModel.js').AttributeType<number>} distance in km
+ * @property {import('../common/kolibri/presentationModel.js').AttributeType<DrinkPrefType>} drinkPref
+ * @property {import('../common/kolibri/presentationModel.js').AttributeType<Array<CurrentLocationType>>} locationList
+ * @property {import('../common/kolibri/presentationModel.js').AttributeType<string>} currentAddress
+ * @returns {FilterType}
  */
 const Filter = () => {
+  /** @type {import('../common/kolibri/presentationModel.js').AttributeType<String>} */
   const distanceAttr = Attribute(1, 'distanceFilter');
   distanceAttr.getObs(LABEL).setValue('Distanz in KM');
 
@@ -47,9 +52,9 @@ const Filter = () => {
 
 /**
  * renders the filter to the root element
- * @param {AppController} appController
+ * @param {import('../appController.js').AppControllerType} appController
  * @param {HTMLElement} rootElement
- * @param {selectionController} selectionController
+ * @param {import('../bar/controller.js').SelectionControllerType} selectionController
  */
 const FilterView = (
   appController,

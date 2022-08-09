@@ -1,26 +1,36 @@
+// @ts-nocheck
 /**
  * @module presentationModel
  * Implementation of the Presentation Model Pattern with Attributes that can be managed in a ModelWorld.
  */
-import { Observable } from "./observable.js";
-import { id }         from "./stdlib.js";
+import { Observable } from './observable.js';
+import { id } from './stdlib.js';
 
-export { Attribute, QualifiedAttribute,
-         presentationModelFromAttributeNames,
-         valueOf, readQualifierValue,
-         VALID, VALUE, EDITABLE, LABEL, NAME, TYPE }
+export {
+  Attribute,
+  QualifiedAttribute,
+  presentationModelFromAttributeNames,
+  valueOf,
+  readQualifierValue,
+  VALID,
+  VALUE,
+  EDITABLE,
+  LABEL,
+  NAME,
+  TYPE,
+};
 
 /**
  * @typedef {'value'|'valid'|'editable'|'label'|'name'|'type'} ObservableTypeString
  * Feel free to extend this type with new unique type strings as needed for your application.
  */
 
-/** @type ObservableTypeString */ const VALUE    = "value";
-/** @type ObservableTypeString */ const VALID    = "valid";
-/** @type ObservableTypeString */ const EDITABLE = "editable";
-/** @type ObservableTypeString */ const LABEL    = "label";
-/** @type ObservableTypeString */ const NAME     = "name";
-/** @type ObservableTypeString */ const TYPE     = "type"; // HTML input types: text, number, checkbox, etc.
+/** @type ObservableTypeString */ const VALUE = 'value';
+/** @type ObservableTypeString */ const VALID = 'valid';
+/** @type ObservableTypeString */ const EDITABLE = 'editable';
+/** @type ObservableTypeString */ const LABEL = 'label';
+/** @type ObservableTypeString */ const NAME = 'name';
+/** @type ObservableTypeString */ const TYPE = 'type'; // HTML input types: text, number, checkbox, etc.
 
 /**
  * Convenience function to read the current state of the attribute's VALUE observable for the given attribute.
@@ -28,7 +38,7 @@ export { Attribute, QualifiedAttribute,
  * @param {AttributeType<String>} attribute
  * @return T
  */
-const valueOf = attribute => attribute.getObs(VALUE).getValue();
+const valueOf = (attribute) => attribute.getObs(VALUE).getValue();
 
 /**
  * @typedef { Object<String, AttributeType> } PresentationModel
@@ -41,15 +51,15 @@ const valueOf = attribute => attribute.getObs(VALUE).getValue();
  * @constructor
  * @example
  * const pm = presentationModelFromAttributeNames(["firstname", "lastname"]);
-*/
-const presentationModelFromAttributeNames = attributeNames => {
-    const result = Object.create(null);                 // make sure that we have no prototype
-    attributeNames.forEach ( attributeName => {
-        const attribute = Attribute(undefined);
-        attribute.getObs(LABEL).setValue(attributeName); // default: use the attribute name as the label
-        result[attributeName] = attribute;
-    });
-    return /** @type PresentationModel */result;
+ */
+const presentationModelFromAttributeNames = (attributeNames) => {
+  const result = Object.create(null); // make sure that we have no prototype
+  attributeNames.forEach((attributeName) => {
+    const attribute = Attribute(undefined);
+    attribute.getObs(LABEL).setValue(attributeName); // default: use the attribute name as the label
+    result[attributeName] = attribute;
+  });
+  return /** @type PresentationModel */ result;
 };
 
 /**
@@ -70,66 +80,73 @@ const presentationModelFromAttributeNames = attributeNames => {
  * @constructor
  */
 const ModelWorld = () => {
+  const data = {}; // key -> array of observables
 
-    const data = {}; // key -> array of observables
+  const readQualifierValue = (qualifier) => {
+    const observables = data[qualifier + '.' + VALUE];
+    if (null == observables) {
+      return undefined;
+    }
+    return observables[0].getValue(); // there are no empty arrays
+  };
 
-    const readQualifierValue = qualifier => {
-        const observables = data[qualifier + "." + VALUE];
-        if (null == observables) { return undefined; }
-        return observables[0].getValue(); // there are no empty arrays
-    };
-
-    // handle the change of a value
-    const update = (getQualifier, name, observable) => {
-        const qualifier = getQualifier(); // lazy get
-        if (null == qualifier) { return; }
-        const key = qualifier + "." + name; // example: "Person.4711.firstname" "VALID" -> "Person.4711.firstname.VALID"
-        let candidates = data[key];
-        if (null == candidates) {
-            data[key] = [observable]; // nothing to notify
-            return;
+  // handle the change of a value
+  const update = (getQualifier, name, observable) => {
+    const qualifier = getQualifier(); // lazy get
+    if (null == qualifier) {
+      return;
+    }
+    const key = qualifier + '.' + name; // example: "Person.4711.firstname" "VALID" -> "Person.4711.firstname.VALID"
+    let candidates = data[key];
+    if (null == candidates) {
+      data[key] = [observable]; // nothing to notify
+      return;
+    }
+    let found = false;
+    candidates.forEach((candidate) => {
+      if (candidate === observable) {
+        found = true;
+      } else {
+        candidate.setValue(observable.getValue());
+      }
+    });
+    if (!found) {
+      candidates.push(observable); // lazy init: we should have been in the list
+    }
+  };
+  // handle the change of a qualifier
+  const updateQualifier = (qualifier, newQualifier, observables) => {
+    for (const name in observables) {
+      const observable = observables[name];
+      if (null != qualifier) {
+        // remove qualifier from old candidates
+        const oldKey = qualifier + '.' + name;
+        const oldCandidates = data[oldKey];
+        const foundIndex = oldCandidates.indexOf(observable);
+        if (foundIndex > -1) {
+          oldCandidates.splice(foundIndex, 1);
         }
-        let found = false;
-        candidates.forEach ( candidate => {
-           if (candidate === observable) {
-               found = true;
-           } else {
-               candidate.setValue(observable.getValue());
-           }
-        });
-        if (! found) {
-            candidates.push(observable); // lazy init: we should have been in the list
+        if (oldCandidates.length === 0) {
+          // delete empty candidates here
+          delete data[oldKey];
         }
-    };
-    // handle the change of a qualifier
-    const updateQualifier = (qualifier, newQualifier, observables) => {
-        for (const name in observables) {
-            const observable = observables[name];
-            if (null != qualifier) {                    // remove qualifier from old candidates
-                const oldKey = qualifier + "." + name;
-                const oldCandidates = data[oldKey];
-                const foundIndex = oldCandidates.indexOf(observable);
-                if (foundIndex > -1) {
-                    oldCandidates.splice(foundIndex, 1);
-                }
-                if (oldCandidates.length === 0) {       // delete empty candidates here
-                    delete data[oldKey];
-                }
-            }
-            if (null != newQualifier){                  // add to new candidates
-                const newKey = newQualifier + "." + name;
-                let newCandidates = data[newKey];
-                if (null == newCandidates) {
-                    newCandidates = data[newKey] = [];
-                }
-                if (newCandidates.length > 0) {         // there are existing observables that's values we need to take over
-                    observable.setValue(newCandidates[0].getValue());
-                }
-                newCandidates.push(observable);
-            }
+      }
+      if (null != newQualifier) {
+        // add to new candidates
+        const newKey = newQualifier + '.' + name;
+        let newCandidates = data[newKey];
+        if (null == newCandidates) {
+          newCandidates = data[newKey] = [];
         }
-    };
-    return { update, updateQualifier, readQualifierValue }
+        if (newCandidates.length > 0) {
+          // there are existing observables that's values we need to take over
+          observable.setValue(newCandidates[0].getValue());
+        }
+        newCandidates.push(observable);
+      }
+    }
+  };
+  return { update, updateQualifier, readQualifierValue };
 };
 
 /**
@@ -150,7 +167,8 @@ const readQualifierValue = modelWorld.readQualifierValue; // specific export
  * @example
  * const firstNameAttr = QualifiedAttribute("Person.4711.firstname"); // attr is set to existing values, if any.
  */
-const QualifiedAttribute = qualifier => Attribute(readQualifierValue(qualifier), qualifier);
+const QualifiedAttribute = (qualifier) =>
+  Attribute(readQualifierValue(qualifier), qualifier);
 
 /**
  * @callback Converter
@@ -201,57 +219,64 @@ const QualifiedAttribute = qualifier => Attribute(readQualifierValue(qualifier),
  *          in the ModelWorld and all existing attributes with the same qualifier will be updated to the initial value.
  *          In case that the automatic update is to be omitted, consider using {@link QualifiedAttribute}.
  * @return { AttributeType<T> }
- * @constructor
  * @impure since it changes the ModelWorld in case of a given non-nullish qualifier.
  * @example
  * const firstNameAttr = Attribute("Dierk", "Person.4711.firstname");
  */
 const Attribute = (value, qualifier) => {
+  /** @type {Object.< String, IObservable >} */
+  const observables = {};
 
-    /** @type {Object.< String, IObservable >} */
-    const observables = {};
+  const getQualifier = () => qualifier;
+  const setQualifier = (newQualifier) => {
+    const oldQualifier = qualifier; // store for use in updateQualifier, since that needs the value to properly unregister
+    qualifier = newQualifier; // since updateQualifier sets the qualifier and calls the attribute back to read it, it must have the new value
+    modelWorld.updateQualifier(oldQualifier, qualifier, observables);
+  };
 
-    const getQualifier = () => qualifier;
-    const setQualifier = newQualifier => {
-        const oldQualifier = qualifier;     // store for use in updateQualifier, since that needs the value to properly unregister
-        qualifier = newQualifier;           // since updateQualifier sets the qualifier and calls the attribute back to read it, it must have the new value
-        modelWorld.updateQualifier(oldQualifier, qualifier, observables);
-    };
+  const hasObs = (name) => observables.hasOwnProperty(name);
 
-    const hasObs = name => observables.hasOwnProperty(name);
+  const makeObservable = (name, initValue) => {
+    const observable = Observable(initValue); // we might observe more types than just T, for example VALID: Boolean
 
-    const makeObservable = (name, initValue) => {
-        const observable = Observable(initValue); // we might observe more types than just T, for example VALID: Boolean
+    // noinspection JSValidateTypes // issue with T as generic parameter for the observed value and other observed types
+    observables[name] = observable;
+    observable.onChange((_) =>
+      modelWorld.update(getQualifier, name, observable)
+    );
+    return observable;
+  };
 
-        // noinspection JSValidateTypes // issue with T as generic parameter for the observed value and other observed types
-        observables[name] = observable;
-        observable.onChange( _ => modelWorld.update(getQualifier, name, observable) );
-        return observable;
-    };
+  const getObs = (name, initValue = null) =>
+    hasObs(name) ? observables[name] : makeObservable(name, initValue);
 
-    const getObs = (name, initValue = null) =>
-        hasObs(name)
-            ? observables[name]
-            : makeObservable(name, initValue);
+  getObs(VALUE, value); // initialize the value at least
 
-    getObs(VALUE, value); // initialize the value at least
+  let convert = id;
+  const setConverter = (converter) => {
+    convert = converter;
+    setConvertedValue(getObs(VALUE).getValue());
+  };
+  const setConvertedValue = (val) => getObs(VALUE).setValue(convert(val));
 
-    let   convert           = id ;
-    const setConverter      = converter => {
-        convert = converter;
-        setConvertedValue(getObs(VALUE).getValue());
-    };
-    const setConvertedValue = val => getObs(VALUE).setValue(convert(val));
+  let validator = undefined; // the current validator in use, might change over time
+  let validateListener = undefined; // the "validate" listener on the attribute, lazily initialized
+  const setValidator = (newValidator) => {
+    validator = newValidator;
+    if (!validateListener && validator) {
+      validateListener = (val) =>
+        getObs(VALID).setValue(validator ? validator(val) : true);
+      getObs(VALUE).onChange(validateListener);
+    }
+  };
 
-    let validator        = undefined;  // the current validator in use, might change over time
-    let validateListener = undefined;  // the "validate" listener on the attribute, lazily initialized
-    const setValidator = newValidator => {
-        validator = newValidator;
-        if (! validateListener && validator) {
-            validateListener = val => getObs(VALID).setValue(validator ? validator(val) : true);
-            getObs(VALUE).onChange( validateListener );
-        }
-    };
-
-    return { getObs, hasObs, setValidator, setConverter, setConvertedValue, getQualifier, setQualifier }
+  return {
+    getObs,
+    hasObs,
+    setValidator,
+    setConverter,
+    setConvertedValue,
+    getQualifier,
+    setQualifier,
+  };
 };
