@@ -26,6 +26,7 @@ export { AppController };
  * @property {(searchString: string) => void} onLocationSearched
  * @property {() => void} onMountFilterView
  * @property {() => void} setCurrentUserLocation
+ * @property {(date: Date, openTimes: import('./bar/controller.js').OpeningTimesType[]) => Boolean} isOpenNow
  */
 
 /**
@@ -116,20 +117,20 @@ const AppController = (
   /**
    * Returns boolean if the location is open in the time provided
    * @param {Date} date to check if location is open then
-   * @param {Array} periods when the location is open
+   * @param {Array<import('./bar/controller.js').OpeningTimesType>} periods when the location is open
    * @returns  {boolean}
    */
   const isOpenNow = (date, periods) => {
     if (!periods.length) return false;
     const weekdayNow = date.getDay();
     const todaysOpenTimes = periods?.filter(
-      (p) => p.open.day === weekdayNow || p.close.day === weekdayNow
+      (p) => p.open.day === weekdayNow || p.close?.day === weekdayNow
     );
     if (!todaysOpenTimes.length) return false;
     const openAt = todaysOpenTimes.find((t) => t.open.day === weekdayNow)?.open
       .time;
-    const closeAt = todaysOpenTimes.find((t) => t.close.day === weekdayNow)
-      .close.time;
+    const closeAt = todaysOpenTimes.find((t) => t.close?.day === weekdayNow)
+      ?.close.time;
     const timeNow = dateToTimeString(date);
     //Validate if location is open now
     if (Number(timeNow) > Number(openAt)) {
@@ -151,6 +152,7 @@ const AppController = (
   /**
    * Returns randomly a bar from the list which matches the current set filters
    * @param onlyCheck
+   * @return {void}
    */
   const findBar = (onlyCheck = false) => {
     const currentLocation = locationController.getSelectedLocationModel();
@@ -214,5 +216,6 @@ const AppController = (
     onLocationSearched: onLocationSearched,
     onMountFilterView: onMountFilterView,
     setCurrentUserLocation: setCurrentUserLocation,
+    isOpenNow: isOpenNow,
   };
 };

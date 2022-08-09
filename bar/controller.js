@@ -35,7 +35,7 @@ export { SelectionController, Bar };
 
 /**
  * @typedef OpeningTimesType
- * @property {OpeningDayTimesType} close
+ * @property {OpeningDayTimesType} [close]
  * @property {OpeningDayTimesType} open
  */
 
