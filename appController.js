@@ -10,12 +10,6 @@ import { locationService } from './service/locationService.js';
 export { AppController };
 
 /**
- * @typedef SelectedBarType
- * @property {() => import('./bar/controller.js').BarType} getSelectedBar
- * @property {(bar: import('./bar/controller.js').BarType) => {}} setSelectedBar
- */
-
-/**
  * @typedef BarDataType
  * @property {string} title
  * @property {import('./bar/controller.js').OpenTimesType} openTimes
@@ -28,9 +22,7 @@ export { AppController };
 /**
  * @typedef AppControllerType
  * @property {(bar: BarDataType) => void} addBar
- * @property {() => import('./filter/controller.js').LocationType} getCurrentLocation
  * @property {(onlyCheck: Boolean) => void} findBar
- * @property {() => SelectedBarType} selectedBar
  * @property {(searchString: string) => void} onLocationSearched
  * @property {() => void} onMountFilterView
  * @property {() => void} setCurrentUserLocation
@@ -119,21 +111,6 @@ const AppController = (
 
     // calculate the result
     return c * r;
-  };
-
-  /**
-   * The current selectedBar
-   * @returns {SelectedBarType}
-   */
-  const selectedBar = () => {
-    const selectedBar = Observable({});
-    const getSelectedBar = () => selectedBar.getValue();
-    const setSelectedBar = (bar) => selectedBar.setValue(bar);
-
-    return {
-      getSelectedBar: getSelectedBar,
-      setSelectedBar: setSelectedBar,
-    };
   };
 
   /**
@@ -233,9 +210,7 @@ const AppController = (
 
   return {
     addBar: addBar,
-    getCurrentLocation: getCurrentLocation,
     findBar: findBar,
-    selectedBar: selectedBar,
     onLocationSearched: onLocationSearched,
     onMountFilterView: onMountFilterView,
     setCurrentUserLocation: setCurrentUserLocation,
