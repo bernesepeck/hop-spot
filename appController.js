@@ -2,10 +2,10 @@
  * @module AppController
  */
 
-import { Bar } from './bar/controller.js';
-import { Observable } from './common/kolibri/observable.js';
+import { Bar, SelectionController } from './bar/controller.js';
 import { VALUE } from './common/kolibri/presentationModel.js';
-import { locationService } from './service/locationService.js';
+import { LocationController } from './filter/controller.js';
+import { Filter } from './filter/filter.js';
 
 export { AppController };
 
@@ -27,20 +27,24 @@ export { AppController };
  * @property {() => void} onMountFilterView
  * @property {() => void} setCurrentUserLocation
  * @property {(date: Date, openTimes: import('./bar/controller.js').OpeningTimesType[]) => Boolean} isOpenNow
+ * @property {(location: import('./filter/controller.js').LocationAddressType) => {}} setSelectedLocationModel
+ * @property {import('./filter/filter.js').FilterType} filterModel
+ * @property {(callback: CallableFunction) => import('./bar/controller.js').BarType} onBarSelected
+ * @property {() => void} clearBarSelection
+ * @property {(CallableFunction) => {}} onNoBarFoundChange
+ * @property {() => boolean} getNoBarFound
+ * @property {() => import('./bar/controller.js').BarType} getSelectedBar
  */
 
 /**
  * AppController
- * @param {import('./filter/controller.js').LocationControllerType} locationController
- * @param {import('./filter/filter.js').FilterType} filterModel
- * @param {import('./bar/controller.js').SelectionControllerType} selectionController
  * @returns {AppControllerType}
  */
-const AppController = (
-  locationController,
-  filterModel,
-  selectionController
-) => {
+const AppController = () => {
+  const filterModel = Filter();
+  const locationController = LocationController(filterModel, {});
+  const selectionController = SelectionController(null);
+
   /**@type {Array<import('./bar/controller.js').BarType>} */
   const barList = [];
 
@@ -56,36 +60,6 @@ const AppController = (
     bar.setImage(barData.image);
     bar.setOpeningTimes(barData.openingTimes);
     barList.push(bar);
-  };
-
-  /**
-   *
-   * @param {import('./filter/controller.js').LocationType} location1
-   * @param {import('./filter/controller.js').LocationType} location2
-   * @return {number} distance
-   */
-  const getDistance = (location1, location2) => {
-    const loc1 = { ...location1 };
-    const loc2 = { ...location2 };
-    loc1.lat = (loc1.lat * Math.PI) / 180;
-    loc1.lng = (loc1.lng * Math.PI) / 180;
-    loc2.lat = (loc2.lat * Math.PI) / 180;
-    loc2.lng = (loc2.lng * Math.PI) / 180;
-
-    // Haversine formula
-    let dlon = loc2.lng - loc1.lng;
-    let dlat = loc2.lat - loc1.lat;
-    let a =
-      Math.pow(Math.sin(dlat / 2), 2) +
-      Math.cos(loc1.lat) * Math.cos(loc2.lat) * Math.pow(Math.sin(dlon / 2), 2);
-
-    let c = 2 * Math.asin(Math.sqrt(a));
-
-    // Radius of earth in kilometers.
-    let r = 6371;
-
-    // calculate the result
-    return c * r;
   };
 
   /**
@@ -125,7 +99,7 @@ const AppController = (
 
   /**
    * Returns randomly a bar from the list which matches the current set filters
-   * @param onlyCheck
+   * @param {boolean} [onlyCheck]
    * @return {void}
    */
   const findBar = (onlyCheck = false) => {
@@ -139,7 +113,10 @@ const AppController = (
     };
     const compareDistance = (bar) =>
       filterModel.distance.getObs(VALUE).getValue() >=
-      getDistance(currentLocation?.location, bar.getCoordinates());
+      locationController.getDistance(
+        currentLocation?.location,
+        bar.getCoordinates()
+      );
     const filteredBars = barList.filter(
       (b) =>
         isOpenNow(new Date(), b.getOpeningTimes()) &&
@@ -148,27 +125,16 @@ const AppController = (
     );
     const bar = filteredBars[Math.floor(Math.random() * barList.length)];
     bar?.setDistance(
-      getDistance(bar.getCoordinates(), currentLocation?.location)
+      locationController.getDistance(
+        bar.getCoordinates(),
+        currentLocation?.location
+      )
     );
     if (bar) {
       if (!onlyCheck) selectionController.setSelectedModel(bar);
       selectionController.setNoBarFound(false);
     } else {
       selectionController.setNoBarFound(true);
-    }
-  };
-
-  /**
-   * Calls the location auto complete service with the value
-   * @param {string} value
-   */
-  const onLocationSearched = (value) => {
-    const updateLocationList = (value) =>
-      filterModel.locationList.getObs(VALUE).setValue(value);
-    if (value.length > 3) {
-      locationService().getLocationAutoCompleteList(value, updateLocationList);
-    } else {
-      updateLocationList([]);
     }
   };
 
@@ -187,9 +153,16 @@ const AppController = (
   return {
     addBar: addBar,
     findBar: findBar,
-    onLocationSearched: onLocationSearched,
+    onLocationSearched: locationController.onLocationSearched,
     onMountFilterView: onMountFilterView,
     setCurrentUserLocation: locationController.setCurrentUserLocation,
     isOpenNow: isOpenNow,
+    setSelectedLocationModel: locationController.setSelectedLocationModel,
+    filterModel: filterModel,
+    onBarSelected: selectionController.onModelSelected,
+    clearBarSelection: selectionController.clearSelection,
+    onNoBarFoundChange: selectionController.onNoBarFoundChange,
+    getNoBarFound: selectionController.getNoBarFound,
+    getSelectedBar: selectionController.getSelectedModel,
   };
 };

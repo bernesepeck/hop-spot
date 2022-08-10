@@ -5,25 +5,17 @@ export { filterProjector };
 
 /**
  * Projector to create the view for the filter
- * @param filterModel
- * @param appController
- * @param {SelectionController} selectionController
- * @param {LocationController} locationController
+ * @param {import('../appController.js').AppControllerType} appController
+ * @param {HTMLElement} rootElement
  * @return {HTMLElement}
  */
-const filterProjector = (
-  filterModel,
-  appController,
-  rootElement,
-  selectionController,
-  locationController
-) => {
+const filterProjector = (appController, rootElement) => {
   const filter = document.createElement('DIV');
   filter.setAttribute('class', 'filter-wrapper');
 
   /**
    * Binds Input and Label to Data
-   * @param {import('../common/kolibri/presentationModel.js').AttributeType} Attr
+   * @param {import('../common/kolibri/presentationModel.js').AttributeType<string>} Attr
    * @param {HTMLElement} inputElement
    * @param {HTMLElement} labelElement
    */
@@ -40,7 +32,7 @@ const filterProjector = (
    * Erstellt ein Label mit dem Text und label
    * @param {string} text
    * @param {string} id
-   * @returns {HTMLElement}
+   * @returns {HTMLLabelElement}
    */
   const label = (text, id) => {
     const label = document.createElement('LABEL');
@@ -75,8 +67,8 @@ const filterProjector = (
 
   /**
    * Create a button list
-   * @param {string} label
-   * @param {Attr} Attr
+   * @param {HTMLLabelElement} label
+   * @param {import('../common/kolibri/presentationModel.js').AttributeType<import('../bar/controller.js').MenuType>} Attr
    * @return {HTMLElement}
    */
   const buttonList = (label, Attr) => {
@@ -102,7 +94,7 @@ const filterProjector = (
 
   /**
    * Erstellt ein RangeInput
-   * @param {AttributeType<T>} attr
+   * @param {import('../common/kolibri/presentationModel.js').AttributeType<number>} attr
    * @param {number} min
    * @param {number} max
    * @return {HTMLElement}
@@ -112,8 +104,8 @@ const filterProjector = (
     const rangeInput = document.createElement('INPUT');
     rangeInput.setAttribute('type', 'range');
     rangeInput.setAttribute('id', attr.getQualifier());
-    rangeInput.setAttribute('min', min);
-    rangeInput.setAttribute('max', max);
+    rangeInput.setAttribute('min', min.toString());
+    rangeInput.setAttribute('max', max.toString());
 
     const labelElement = label(
       attr.getObs(LABEL).getValue(),
@@ -139,8 +131,8 @@ const filterProjector = (
 
   /**
    * Creates location auto complete
-   * @param {*} AttrInput
-   * @param {*} AttrList
+   * @param {import('../common/kolibri/presentationModel.js').AttributeType<string>} AttrInput
+   * @param {import('../common/kolibri/presentationModel.js').AttributeType<Array<import('./controller.js').LocationAddressType>>} AttrList
    * @returns
    */
   const autoComplete = (AttrInput, AttrList) => {
@@ -167,7 +159,7 @@ const filterProjector = (
 
     //Bind Event to Input to get locations for the autocomplete list
     inputElement.addEventListener('input', () =>
-      appController.onLocationSearched(inputElement.value, filterModel)
+      appController.onLocationSearched(inputElement.value)
     );
     //Add the auto complete list
     AttrList.getObs(VALUE).onChange((value) => {
@@ -177,7 +169,7 @@ const filterProjector = (
         value.forEach((location) => {
           const item = document.createElement('LI');
           item.addEventListener('click', () => {
-            locationController.setSelectedLocationModel(location);
+            appController.setSelectedLocationModel(location);
             listElement.style.display = 'none';
           });
           item.textContent = location.address;
@@ -218,11 +210,17 @@ const filterProjector = (
 
   filter.appendChild(title('Was ist dir wichtig?', 1));
   filter.appendChild(
-    autoComplete(filterModel.currentAddress, filterModel.locationList)
+    autoComplete(
+      appController.filterModel.currentAddress,
+      appController.filterModel.locationList
+    )
   );
-  filter.appendChild(rangeInput(filterModel.distance, 0, 10));
+  filter.appendChild(rangeInput(appController.filterModel.distance, 0, 10));
   filter.appendChild(
-    buttonList(label('Drinkpräverenzen', 'drink-filter'), filterModel.drinkPref)
+    buttonList(
+      label('Drinkpräverenzen', 'drink-filter'),
+      appController.filterModel.drinkPref
+    )
   );
 
   const findBarButton = button('Finde Bar', () => appController.findBar());
@@ -230,7 +228,7 @@ const filterProjector = (
   filter.appendChild(errorMessageElement);
   filter.appendChild(findBarButton);
 
-  selectionController.onNoBarFoundChange((isBar) =>
+  appController.onNoBarFoundChange((isBar) =>
     toggleError(findBarButton, isBar, errorMessageElement)
   );
 

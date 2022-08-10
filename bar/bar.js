@@ -3,13 +3,13 @@ export { BarView };
 
 /**
  * Renders the view for the selected bar
- * @param {*} selectionController
+ * @param {import('../appController.js').AppControllerType} appController
  * @param {HTMLElement} rootElement
  */
-const BarView = (selectionController, rootElement) => {
-  const render = (bar) => barProjector(selectionController, rootElement, bar);
+const BarView = (appController, rootElement) => {
+  const render = (bar) => barProjector(appController, rootElement, bar);
 
-  selectionController.onModelSelected((bar) => {
+  appController.onBarSelected((bar) => {
     if (bar) render(bar);
   });
 };

@@ -5,11 +5,11 @@ export { barProjector };
 
 /**
  * Projector for the bar view
- * @param {SelectionControllerType} selectionController
+ * @param {import('../appController.js').AppControllerType} appController
  * @param {HTMLElement} rootElement
- * @param {Bar} bar
+ * @param {import('./controller.js').BarType} bar
  */
-const barProjector = (selectionController, rootElement, bar) => {
+const barProjector = (appController, rootElement, bar) => {
   const barElement = document.createElement('DIV');
   barElement.setAttribute('class', 'bar');
   const dataWrapperElement = document.createElement('DIV');
@@ -71,7 +71,7 @@ const barProjector = (selectionController, rootElement, bar) => {
   barElement.appendChild(dataWrapperElement);
 
   barElement.appendChild(
-    button('Nächste Bar', () => selectionController.clearSelection())
+    button('Nächste Bar', () => appController.clearBarSelection())
   );
   rootElement.replaceChildren(barElement);
 };

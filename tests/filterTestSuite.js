@@ -1,26 +1,8 @@
 import { TestSuite } from '../../common/kolibri/util/test.js';
 import { AppController } from '../appController.js';
-import { SelectionController } from '../bar/controller.js';
 import { VALUE } from '../common/kolibri/presentationModel.js';
-import { LocationController } from '../filter/controller.js';
-import { Filter } from '../filter/filter.js';
 
 const filterSuite = TestSuite('filter');
-
-//BeforeEach
-const beforeEach = () => {
-  const locationController = LocationController();
-  const filterModel = Filter();
-  const selectionController = SelectionController();
-
-  const controller = AppController(
-    locationController,
-    filterModel,
-    selectionController
-  );
-
-  return { locationController, filterModel, selectionController, controller };
-};
 
 //OpenNow Tests
 const getPeriods = (alwaysOpen = false) => {
@@ -75,8 +57,7 @@ filterSuite.add(
 
     const periods = getPeriods();
 
-    const { locationController, filterModel, selectionController, controller } =
-      beforeEach();
+    const controller = AppController();
 
     //Assert
     assert.is(controller.isOpenNow(now, periods), true);
@@ -112,15 +93,14 @@ filterSuite.add(
   'findBar: should set noBarFound in selectionController when no Bar matched the filter',
   (assert) => {
     //Arrange
-    const { locationController, filterModel, selectionController, controller } =
-      beforeEach();
+    const controller = AppController();
     controller.addBar(bar);
 
     //Action
     controller.findBar(true);
 
     //Assert
-    assert.is(selectionController.getNoBarFound(), true);
+    assert.is(controller.getNoBarFound(), true);
   }
 );
 
@@ -128,27 +108,27 @@ filterSuite.add(
   'findBar: should return bar when all filter match and distance within filter',
   (assert) => {
     //Arrange
-    const { locationController, filterModel, selectionController, controller } =
-      beforeEach();
+    const controller = AppController();
+
     //Match all other Filters
-    filterModel.drinkPref.getObs(VALUE).setValue(bar.menu);
+    controller.filterModel.drinkPref.getObs(VALUE).setValue(bar.menu);
     bar.openingTimes = getPeriods(true);
     controller.addBar(bar);
 
     //Set Distance of currentLocation within 2km of radius
-    locationController.setSelectedLocationModel({
+    controller.setSelectedLocationModel({
       location: { lat: 46.94847, lng: 7.436773 }, //coordinates of Bern Bahnhof
       address: '',
     });
 
-    filterModel.distance.getObs(VALUE).setValue(2);
+    controller.filterModel.distance.getObs(VALUE).setValue(2);
 
     //Action
     controller.findBar(false);
 
     //Assert
-    assert.is(selectionController.getNoBarFound(), false);
-    assert.is(selectionController.getSelectedModel().getTitle(), bar.title);
+    assert.is(controller.getNoBarFound(), false);
+    assert.is(controller.getSelectedBar().getTitle(), bar.title);
   }
 );
 
@@ -156,25 +136,25 @@ filterSuite.add(
   'findBar: should set barNotFound when all filter match expect distance within filter',
   (assert) => {
     //Arrange
-    const { locationController, filterModel, selectionController, controller } =
-      beforeEach();
+    const controller = AppController();
+
     //Match all other Filters
-    filterModel.drinkPref.getObs(VALUE).setValue(bar.menu);
+    controller.filterModel.drinkPref.getObs(VALUE).setValue(bar.menu);
     bar.openingTimes = getPeriods(true);
     controller.addBar(bar);
 
-    locationController.setSelectedLocationModel({
+    controller.setSelectedLocationModel({
       location: { lat: 45.706539, lng: 4.795532 }, //coordinates far away in lyon
       address: '',
     });
 
-    filterModel.distance.getObs(VALUE).setValue(1);
+    controller.filterModel.distance.getObs(VALUE).setValue(1);
 
     //Action
     controller.findBar(false);
 
     //Assert
-    assert.is(selectionController.getNoBarFound(), true);
+    assert.is(controller.getNoBarFound(), true);
   }
 );
 
@@ -182,29 +162,28 @@ filterSuite.add(
   'findBar: should return bar when all filter match and one of the drinkPref matches within filter',
   (assert) => {
     //Arrange
-    const { locationController, filterModel, selectionController, controller } =
-      beforeEach();
+    const controller = AppController();
     //Match all other Filters
     bar.openingTimes = getPeriods(true);
     controller.addBar(bar);
-    locationController.setSelectedLocationModel({
+    controller.setSelectedLocationModel({
       location: bar.coordinates,
       address: '',
     });
 
     //Match one drink with the drinkPref
-    filterModel.drinkPref
+    controller.filterModel.drinkPref
       .getObs(VALUE)
       .setValue({ beer: true, wine: false, cocktail: false });
 
-    filterModel.distance.getObs(VALUE).setValue(2);
+    controller.filterModel.distance.getObs(VALUE).setValue(2);
 
     //Action
     controller.findBar(false);
 
     //Assert
-    assert.is(selectionController.getNoBarFound(), false);
-    assert.is(selectionController.getSelectedModel().getTitle(), bar.title);
+    assert.is(controller.getNoBarFound(), false);
+    assert.is(controller.getSelectedBar().getTitle(), bar.title);
   }
 );
 

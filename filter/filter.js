@@ -54,25 +54,11 @@ const Filter = () => {
  * renders the filter to the root element
  * @param {import('../appController.js').AppControllerType} appController
  * @param {HTMLElement} rootElement
- * @param {import('../bar/controller.js').SelectionControllerType} selectionController
  */
-const FilterView = (
-  appController,
-  rootElement,
-  filterModel,
-  selectionController,
-  locationController
-) => {
-  const render = () =>
-    filterProjector(
-      filterModel,
-      appController,
-      rootElement,
-      selectionController,
-      locationController
-    );
+const FilterView = (appController, rootElement) => {
+  const render = () => filterProjector(appController, rootElement);
   render();
-  selectionController.onModelSelected((value) => {
+  appController.onBarSelected((value) => {
     if (!value) {
       render();
     }
