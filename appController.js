@@ -59,32 +59,6 @@ const AppController = (
   };
 
   /**
-   * Gets the current user position with the navigator API
-   * @returns {import('./filter/controller.js').LocationType}
-   */
-  const getCurrentLocation = () => {
-    navigator.geolocation.getCurrentPosition(onSuccess, onError);
-    // handle success case
-    function onSuccess(position) {
-      console.log(position);
-    }
-
-    // handle error case
-    function onError() {
-      console.log('error');
-    }
-    //Mock as geolocation only works with https
-    return { lat: 46.94113, lng: 7.43047 };
-  };
-
-  const setCurrentUserLocation = () => {
-    locationController.setSelectedLocationModel({
-      location: getCurrentLocation(),
-      address: 'Aktueller Standort',
-    });
-  };
-
-  /**
    *
    * @param {import('./filter/controller.js').LocationType} location1
    * @param {import('./filter/controller.js').LocationType} location2
@@ -215,7 +189,7 @@ const AppController = (
     findBar: findBar,
     onLocationSearched: onLocationSearched,
     onMountFilterView: onMountFilterView,
-    setCurrentUserLocation: setCurrentUserLocation,
+    setCurrentUserLocation: locationController.setCurrentUserLocation,
     isOpenNow: isOpenNow,
   };
 };
