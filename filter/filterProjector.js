@@ -1,6 +1,7 @@
 import { VALUE, LABEL } from '../common/kolibri/presentationModel.js';
 import { button } from '../common/elements/button.js';
 import { title } from '../common/elements/title.js';
+import { debounce } from '../helpers.js';
 export { filterProjector };
 
 /**
@@ -158,8 +159,9 @@ const filterProjector = (appController, rootElement) => {
     bindTextInput(AttrInput, inputElement, labelElement);
 
     //Bind Event to Input to get locations for the autocomplete list
-    inputElement.addEventListener('input', () =>
-      appController.onLocationSearched(inputElement.value)
+    inputElement.addEventListener(
+      'input',
+      debounce(() => appController.onLocationSearched(inputElement.value), 500)
     );
     //Add the auto complete list
     AttrList.getObs(VALUE).onChange((value) => {
