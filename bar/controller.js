@@ -88,12 +88,15 @@ const Bar = () => {
  * @property {() => boolean} getNoBarFound
  * @property {() => boolean} onNoBarFoundChange
  * @property {() => {}} clearSelection
+ * @property {(CallableFunction) => Boolean} onBarLoading
+ * @property {(value: boolean) => void} setBarLoading
  * @param {*} noSelection
  * @returns {SelectionControllerType}
  */
 const SelectionController = (noSelection) => {
   const selectedModelObs = Observable(noSelection);
   const noBarFound = Observable(false);
+  const barLoading = Observable(false);
 
   return {
     setSelectedModel: selectedModelObs.setValue,
@@ -103,5 +106,7 @@ const SelectionController = (noSelection) => {
     getNoBarFound: noBarFound.getValue,
     onNoBarFoundChange: noBarFound.onChange,
     clearSelection: () => selectedModelObs.setValue(noSelection),
+    onBarLoading: barLoading.onChange,
+    setBarLoading: barLoading.setValue,
   };
 };

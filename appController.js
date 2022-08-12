@@ -22,7 +22,7 @@ export { AppController };
 /**
  * @typedef AppControllerType
  * @property {(bar: BarDataType) => void} addBar
- * @property {(onlyCheck: Boolean) => void} findBar
+ * @property {(onlyCheck?: Boolean) => void} findBar
  * @property {(searchString: string) => void} onLocationSearched
  * @property {() => void} onMountFilterView
  * @property {() => void} setCurrentUserLocation
@@ -34,6 +34,7 @@ export { AppController };
  * @property {(CallableFunction) => {}} onNoBarFoundChange
  * @property {() => boolean} getNoBarFound
  * @property {() => import('./bar/controller.js').BarType} getSelectedBar
+ * @property {(CallableFunction) => boolean} onBarLoading
  */
 
 /**
@@ -103,6 +104,8 @@ const AppController = () => {
    * @return {void}
    */
   const findBar = (onlyCheck = false) => {
+    if (!onlyCheck) selectionController.setBarLoading(true);
+
     const currentLocation = locationController.getSelectedLocationModel();
     const compareDrinkpref = (bar) => {
       const filter = filterModel.drinkPref.getObs(VALUE).getValue();
@@ -131,7 +134,12 @@ const AppController = () => {
       )
     );
     if (bar) {
-      if (!onlyCheck) selectionController.setSelectedModel(bar);
+      if (!onlyCheck) {
+        setTimeout(() => {
+          selectionController.setBarLoading(false);
+          selectionController.setSelectedModel(bar);
+        }, 4000);
+      }
       selectionController.setNoBarFound(false);
     } else {
       selectionController.setNoBarFound(true);
@@ -164,5 +172,6 @@ const AppController = () => {
     onNoBarFoundChange: selectionController.onNoBarFoundChange,
     getNoBarFound: selectionController.getNoBarFound,
     getSelectedBar: selectionController.getSelectedModel,
+    onBarLoading: selectionController.onBarLoading,
   };
 };

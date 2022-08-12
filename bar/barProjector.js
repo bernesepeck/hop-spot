@@ -1,7 +1,7 @@
 import { title } from '../common/elements/title.js';
 import { button } from '../common/elements/button.js';
 
-export { barProjector };
+export { barProjector, loadingProjector };
 
 /**
  * Projector for the bar view
@@ -74,4 +74,15 @@ const barProjector = (appController, rootElement, bar) => {
     button('Nächste Bar', () => appController.clearBarSelection())
   );
   rootElement.replaceChildren(barElement);
+};
+
+const loadingProjector = (rootElement) => {
+  const loadingWrapper = document.createElement('DIV');
+  loadingWrapper.classList.add('loading-wrapper');
+  const svg = document.createElement('OBJECT');
+  svg.setAttribute('data', '/assets/beertapglas.svg');
+  svg.setAttribute('width', '300px');
+  svg.setAttribute('height', '600px');
+  loadingWrapper.appendChild(svg);
+  rootElement.replaceChildren(loadingWrapper);
 };

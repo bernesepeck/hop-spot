@@ -1,5 +1,6 @@
-import { barProjector } from './barProjector.js';
-export { BarView };
+import { AppController } from '../appController.js';
+import { barProjector, loadingProjector } from './barProjector.js';
+export { BarView, LoadBarView };
 
 /**
  * Renders the view for the selected bar
@@ -11,5 +12,12 @@ const BarView = (appController, rootElement) => {
 
   appController.onBarSelected((bar) => {
     if (bar) render(bar);
+  });
+};
+
+const LoadBarView = (appController, rootElement) => {
+  const render = () => loadingProjector(rootElement);
+  appController.onBarLoading((loading) => {
+    if (loading) render();
   });
 };

@@ -1,55 +1,136 @@
-html, body, div, span, applet, object, iframe,
-h1, h2, h3, h4, h5, h6, p, blockquote, pre,
-a, abbr, acronym, address, big, cite, code,
-del, dfn, em, img, ins, kbd, q, s, samp,
-small, strike, strong, sub, sup, tt, var,
-b, u, i, center,
-dl, dt, dd, ol, ul, li,
-fieldset, form, label, legend,
-table, caption, tbody, tfoot, thead, tr, th, td,
-article, aside, canvas, details, embed, 
-figure, figcaption, footer, header, hgroup, 
-menu, nav, output, ruby, section, summary,
-time, mark, audio, video {
-	margin: 0;
-	padding: 0;
-	border: 0;
-	font-size: 100%;
-	font: inherit;
-	vertical-align: baseline;
+html,
+body,
+div,
+span,
+applet,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+big,
+cite,
+code,
+del,
+dfn,
+em,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+b,
+u,
+i,
+center,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+article,
+aside,
+canvas,
+details,
+embed,
+figure,
+figcaption,
+footer,
+header,
+hgroup,
+menu,
+nav,
+output,
+ruby,
+section,
+summary,
+time,
+mark,
+audio,
+video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
 }
 /* HTML5 display-role reset for older browsers */
-article, aside, details, figcaption, figure, 
-footer, header, hgroup, menu, nav, section {
-	display: block;
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section {
+  display: block;
 }
 body {
-	line-height: 1;
+  line-height: 1;
 }
-ol, ul {
-	list-style: none;
+ol,
+ul {
+  list-style: none;
 }
-blockquote, q {
-	quotes: none;
+blockquote,
+q {
+  quotes: none;
 }
-blockquote:before, blockquote:after,
-q:before, q:after {
-	content: '';
-	content: none;
+blockquote:before,
+blockquote:after,
+q:before,
+q:after {
+  content: '';
+  content: none;
 }
 table {
-	border-collapse: collapse;
-	border-spacing: 0;
+  border-collapse: collapse;
+  border-spacing: 0;
 }
 button {
   background-color: transparent;
 }
 
 :root {
-  --color-yellow: #F9DC5C;
-  --color-pink: #E8A1D1;
-  --color-red: #E84855;
-  --color-blue: #0D4087;
+  --color-yellow: #f9dc5c;
+  --color-pink: #e8a1d1;
+  --color-red: #e84855;
+  --color-blue: #0d4087;
   --color-black: #000000;
   --spacing: 0.25rem;
   --font-size-s: 1rem;
@@ -57,15 +138,14 @@ button {
   --font-size-l: 2rem;
   --font-size-xl: 3rem;
   --inner-text-shadow: 1px 1px white, -1px -1px #444;
-  --shadow-4: 0 1px 1px rgba(0,0,0,0.15), 
-              0 2px 2px rgba(0,0,0,0.15), 
-              0 4px 4px rgba(0,0,0,0.15), 
-              0 8px 8px rgba(0,0,0,0.15);
+  --shadow-4: 0 1px 1px rgba(0, 0, 0, 0.15), 0 2px 2px rgba(0, 0, 0, 0.15),
+    0 4px 4px rgba(0, 0, 0, 0.15), 0 8px 8px rgba(0, 0, 0, 0.15);
   --border: 3px solid var(--color-black);
-  --border-radius: 5px;         
+  --border-radius: 5px;
 }
 
-body, html {
+body,
+html {
   height: 100%;
 }
 
@@ -113,19 +193,17 @@ h4 {
 }
 
 .icon-button {
-  
   font-size: var(--font-size-xl);
   border: 0;
-
 }
-.icon-button [class^="icon-"] {
+.icon-button [class^='icon-'] {
   text-shadow: var(--shadow-4);
 }
 
 .icon-button.active {
   color: var(--color-pink);
 }
-.icon-button.active [class^="icon-"]  {
+.icon-button.active [class^='icon-'] {
   text-shadow: var(--inner-text-shadow);
 }
 
@@ -140,7 +218,7 @@ label {
 .ball {
   border-radius: 50%;
   position: absolute;
-  transition: transform .5s ease;
+  transition: transform 0.5s ease;
 }
 
 .ball-background {
@@ -191,7 +269,7 @@ label {
   z-index: 1;
 }
 
-/* BAR Site Styles */ 
+/* BAR Site Styles */
 .bar {
   display: flex;
   flex-direction: column;
@@ -224,17 +302,16 @@ label {
 }
 
 /** INPUT Styling */
-input[type=text], input[type=number] {
+input[type='text'],
+input[type='number'] {
   border: var(--border);
   border-radius: var(--border-radius);
   height: 40px;
 }
 
-
-
 /* SLIDER Styling */
 
-input[type=range] {
+input[type='range'] {
   --current-value: 0;
   --current-position: 0px;
   -webkit-appearance: none; /* Hides the slider so that custom slider can be made */
@@ -243,7 +320,7 @@ input[type=range] {
   position: relative;
 }
 
-input[type=range]::after {
+input[type='range']::after {
   counter-reset: current-value var(--current-value);
   content: counter(current-value);
   width: 20px;
@@ -255,26 +332,26 @@ input[type=range]::after {
   left: var(--current-position);
 }
 
-input[type=range]::-webkit-slider-thumb {
+input[type='range']::-webkit-slider-thumb {
   -webkit-appearance: none;
 }
 
-input[type=range]:focus {
+input[type='range']:focus {
   outline: none; /* Removes the blue border. You should probably do some kind of focus styling for accessibility reasons though. */
 }
 
-input[type=range]::-ms-track {
+input[type='range']::-ms-track {
   width: 100%;
   cursor: pointer;
 
   /* Hides the slider so custom styles can be added */
-  background: transparent; 
+  background: transparent;
   border-color: transparent;
   color: transparent;
 }
 
 /* Special styling for WebKit/Blink */
-input[type=range]::-webkit-slider-thumb {
+input[type='range']::-webkit-slider-thumb {
   -webkit-appearance: none;
   cursor: pointer;
   margin-top: -9px; /* You need to specify a margin in Chrome, but in Firefox and IE it is automatic */
@@ -286,7 +363,7 @@ input[type=range]::-webkit-slider-thumb {
 }
 
 /* All the same stuff for Firefox */
-input[type=range]::-moz-range-thumb {
+input[type='range']::-moz-range-thumb {
   cursor: pointer;
   --slider-button-size: 20px;
   width: var(--slider-button-size);
@@ -295,23 +372,24 @@ input[type=range]::-moz-range-thumb {
   background-color: var(--color-pink);
 }
 
-input[type=range]::-webkit-slider-runnable-track {
+input[type='range']::-webkit-slider-runnable-track {
   width: 100%;
   background-color: var(--color-black);
   height: var(--slider-width);
   --slider-width: 3px;
 }
 
-input[type=range]::-moz-range-track {
+input[type='range']::-moz-range-track {
   width: 100%;
   background-color: var(--color-black);
   height: var(--slider-width);
   --slider-width: 3px;
 }
 
-input[type=range]::-ms-track { /* should come after -webkit- */
-	border-color: transparent;
-	color: transparent;
+input[type='range']::-ms-track {
+  /* should come after -webkit- */
+  border-color: transparent;
+  color: transparent;
   width: 100%;
   background-color: var(--color-black);
   height: var(--slider-width);
@@ -325,13 +403,13 @@ input[type=range]::-ms-track { /* should come after -webkit- */
 
 .auto-complete-list {
   position: absolute;
-    width: 100%;
-    background-color: white;
-    border: var(--border);
-    border-radius: var(--border-radius);
-    z-index: 1;
-    padding: calc(var(--spacing) * 3);
-    top: 35px;
+  width: 100%;
+  background-color: white;
+  border: var(--border);
+  border-radius: var(--border-radius);
+  z-index: 1;
+  padding: calc(var(--spacing) * 3);
+  top: 35px;
 }
 
 .auto-complete-list li {
@@ -339,7 +417,7 @@ input[type=range]::-ms-track { /* should come after -webkit- */
   padding: calc(var(--spacing) * 1);
 }
 
-.auto-complete [class^="icon-"] {
+.auto-complete [class^='icon-'] {
   position: absolute;
   right: 0;
   width: 40px;
@@ -360,3 +438,10 @@ input[type=range]::-ms-track { /* should come after -webkit- */
   width: 100%;
 }
 
+/*LOADING WRAPPER */
+.loading-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
