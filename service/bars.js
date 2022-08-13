@@ -34,7 +34,7 @@ const bars = [
       },
       {
         close: { day: 0, time: '0030' },
-        open: { day: 6, time: '1100' },
+        open: { day: 6, time: '0800' },
       },
     ],
   },

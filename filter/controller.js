@@ -23,7 +23,7 @@ import { locationService } from '../service/locationService.js';
  * @property {(location: LocationAddressType) => {}} setSelectedLocationModel
  * @property {() => {location: LocationAddressType}} getSelectedLocationModel
  * @property {CallableFunction} onLocationModelSelected
- * @property {() => {}} clearLocation
+ * @property {() => void} clearLocation
  * @property {() => LocationType} getCurrentLocation
  * @property {() => void} setCurrentUserLocation
  * @property {(location1: LocationType, location2: LocationType) => number} getDistance
@@ -106,11 +106,19 @@ const LocationController = (filterModel, noLocation) => {
     }
   };
 
+  /**
+   * Clears the location
+   */
+  const clearLocation = () => {
+    selectedLocationModelObs.setValue(noLocation);
+    filterModel.currentAddress.getObs(VALUE).setValue('');
+  };
+
   return {
     setSelectedLocationModel: selectedLocationModelObs.setValue,
     getSelectedLocationModel: selectedLocationModelObs.getValue,
     onLocationModelSelected: selectedLocationModelObs.onChange,
-    clearLocation: () => selectedLocationModelObs.setValue(noLocation),
+    clearLocation: clearLocation,
     getCurrentLocation: getCurrentLocation,
     setCurrentUserLocation: setCurrentUserLocation,
     getDistance: getDistance,

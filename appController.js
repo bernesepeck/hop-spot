@@ -35,6 +35,7 @@ export { AppController };
  * @property {() => boolean} getNoBarFound
  * @property {() => import('./bar/controller.js').BarType} getSelectedBar
  * @property {(CallableFunction) => boolean} onBarLoading
+ * @property {() => void} clearLocation
  */
 
 /**
@@ -173,5 +174,6 @@ const AppController = () => {
     getNoBarFound: selectionController.getNoBarFound,
     getSelectedBar: selectionController.getSelectedModel,
     onBarLoading: selectionController.onBarLoading,
+    clearLocation: locationController.clearLocation,
   };
 };

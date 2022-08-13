@@ -138,17 +138,27 @@ const filterProjector = (appController, rootElement) => {
    */
   const autoComplete = (AttrInput, AttrList) => {
     const wrapper = document.createElement('DIV');
+    //Create Input Element
     const inputElement = document.createElement('INPUT');
+    inputElement.setAttribute('type', 'text');
+    inputElement.setAttribute('id', AttrInput.getQualifier());
+    //Create autocomplete wrapper
     const autoCompleteWrapper = document.createElement('DIV');
-    const listElement = document.createElement('DIV');
+    autoCompleteWrapper.setAttribute('class', 'auto-complete');
+    //Create Current Location Button
     const currentLocationButton = document.createElement('BUTTON');
     currentLocationButton.classList.add('icon-location');
     currentLocationButton.addEventListener('click', () =>
       appController.setCurrentUserLocation()
     );
-    inputElement.setAttribute('type', 'text');
-    inputElement.setAttribute('id', AttrInput.getQualifier());
-    autoCompleteWrapper.setAttribute('class', 'auto-complete');
+    //Create Clear Location Button
+    const clearLocationButton = document.createElement('BUTTON');
+    clearLocationButton.classList.add('icon-cross');
+    clearLocationButton.addEventListener('click', () =>
+      appController.clearLocation()
+    );
+    //Create Listeelement for the autocomplete suggestions
+    const listElement = document.createElement('DIV');
     listElement.setAttribute('class', 'auto-complete-list');
 
     const labelElement = label(
@@ -181,9 +191,11 @@ const filterProjector = (appController, rootElement) => {
         listElement.style.display = 'none';
       }
     });
+    //Append all children
     autoCompleteWrapper.appendChild(listElement);
     autoCompleteWrapper.appendChild(inputElement);
     autoCompleteWrapper.appendChild(currentLocationButton);
+    autoCompleteWrapper.appendChild(clearLocationButton);
     wrapper.appendChild(labelElement);
     wrapper.appendChild(autoCompleteWrapper);
     return wrapper;
@@ -198,7 +210,7 @@ const filterProjector = (appController, rootElement) => {
   const toggleError = (button, showError, errorElement) => {
     if (showError) {
       errorElement.textContent = 'Keine Bar mit diesen Filtern vorhanden';
-      button.setAttribute('disabled', true);
+      button.setAttribute('disabled', 'true');
     } else {
       errorElement.textContent = '';
       button.removeAttribute('disabled');

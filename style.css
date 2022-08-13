@@ -417,12 +417,24 @@ input[type='range']::-ms-track {
   padding: calc(var(--spacing) * 1);
 }
 
-.auto-complete [class^='icon-'] {
+.auto-complete [class^='icon-location'] {
   position: absolute;
   right: 0;
   width: 40px;
   height: 100%;
-  border-left: var(--border);
+  border: var(--border);
+  background-color: white;
+}
+
+.auto-complete .icon-cross {
+  position: absolute;
+  right: 40px;
+  width: 40px;
+  height: 100%;
+  border: var(--border);
+  border-left: none;
+  border-right: none;
+  background-color: white;
 }
 
 /*FILTER Site*/
