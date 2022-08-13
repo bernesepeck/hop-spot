@@ -28,6 +28,7 @@ import { locationService } from '../service/locationService.js';
  * @property {() => void} setCurrentUserLocation
  * @property {(location1: LocationType, location2: LocationType) => number} getDistance
  * @property {(searchString: string) => void} onLocationSearched
+ * @property {() => boolean} isCurrentLocationSet
  * @param {import('./filter.js').FilterType} filterModel
  * @param {any} noLocation
  *
@@ -35,6 +36,8 @@ import { locationService } from '../service/locationService.js';
  */
 const LocationController = (filterModel, noLocation) => {
   const selectedLocationModelObs = Observable(noLocation);
+  let isCurrentLocation = false;
+  selectedLocationModelObs.onChange(() => (isCurrentLocation = false));
 
   /**
    * Gets the current user position with the navigator API
@@ -60,6 +63,7 @@ const LocationController = (filterModel, noLocation) => {
       location: getCurrentLocation(),
       address: 'Aktueller Standort',
     });
+    isCurrentLocation = true;
   };
 
   /**
@@ -123,5 +127,6 @@ const LocationController = (filterModel, noLocation) => {
     setCurrentUserLocation: setCurrentUserLocation,
     getDistance: getDistance,
     onLocationSearched: onLocationSearched,
+    isCurrentLocationSet: () => isCurrentLocation,
   };
 };
