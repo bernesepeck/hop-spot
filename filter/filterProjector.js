@@ -173,12 +173,23 @@ const filterProjector = (appController, rootElement) => {
       'input',
       debounce(() => appController.onLocationSearched(inputElement.value), 500)
     );
-    //Wenn der aktuelle standort gewählt ist sollte bei Fokus das Input geleert werden
+    //when the current location is set, clear input on focus
     inputElement.addEventListener('focus', () => {
-      if (appController.isCurrentLocationSet) {
+      if (appController.isCurrentLocationSet()) {
         appController.clearLocation();
       }
     });
+
+    //closes the dropdown when clicked beside the dropdown
+    rootElement.addEventListener('click', (event) => {
+      if (
+        AttrList.getObs(VALUE).getValue().length &&
+        !(event.target.id === AttrInput.getQualifier())
+      ) {
+        listElement.style.display = 'none';
+      }
+    });
+
     //Add the auto complete list
     AttrList.getObs(VALUE).onChange((value) => {
       listElement.innerHTML = '';

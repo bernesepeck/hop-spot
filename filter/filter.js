@@ -37,7 +37,7 @@ const Filter = () => {
   );
   drinkPrefAttr.getObs(LABEL).setValue('Drinkpräverenzen');
 
-  const currentAddress = Attribute('');
+  const currentAddress = Attribute('', 'current-address');
   currentAddress.getObs(LABEL).setValue('Aktueller Standort');
 
   const locationList = Attribute([]);
