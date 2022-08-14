@@ -41,13 +41,16 @@ const LocationController = (filterModel, noLocation) => {
 
   /**
    * Gets the current user position with the navigator API
-   * @returns {LocationType}
+   * @returns {LocationType | undefined}
    */
   const getCurrentLocation = () => {
     navigator.geolocation.getCurrentPosition(onSuccess, onError);
+    /**@type {LocationType} */
+    const location = { lat: 0, lng: 0 };
     // handle success case
     function onSuccess(position) {
-      console.log(position);
+      location.lat = position.coords.latitude;
+      location.lng = position.coords.lng;
     }
 
     // handle error case
@@ -55,13 +58,15 @@ const LocationController = (filterModel, noLocation) => {
       console.log('error');
     }
     //Mock as geolocation only works with https
-    return { lat: 46.94113, lng: 7.43047 };
+    return location.lat && location.lng ? location : undefined;
   };
 
   const setCurrentUserLocation = () => {
     selectedLocationModelObs.setValue({
       location: getCurrentLocation(),
-      address: 'Aktueller Standort',
+      address: getCurrentLocation()
+        ? 'Aktueller Standort'
+        : 'Aktueller Standort nicht gefunden',
     });
     isCurrentLocation = true;
   };
