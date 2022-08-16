@@ -14,7 +14,7 @@
           "wine":false,
           "cocktail":true
        },
-       "image":"/assets/pub.jpg",
+       "image":"/hop-spot/assets/pub.jpg",
        "openingTimes":[
           {
              "close":{
@@ -103,7 +103,7 @@
            "wine":false,
            "cocktail":true
         },
-        "image":"/assets/pub.jpg",
+        "image":"/hop-spot/assets/pub.jpg",
         "openingTimes":[
            {
               "close":{

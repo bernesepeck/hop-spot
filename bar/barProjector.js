@@ -80,7 +80,7 @@ const loadingProjector = (rootElement) => {
   const loadingWrapper = document.createElement('DIV');
   loadingWrapper.classList.add('loading-wrapper');
   const svg = document.createElement('OBJECT');
-  svg.setAttribute('data', '/assets/beertapglas.svg');
+  svg.setAttribute('data', '/hop-spot/assets/beertapglas.svg');
   svg.setAttribute('width', '300px');
   svg.setAttribute('height', '600px');
   loadingWrapper.appendChild(svg);

@@ -6,7 +6,7 @@ const bars = [
     openTimes: { from: '1658581943', to: '1658610000' },
     coordinates: { lat: 46.947498, lng: 7.45966 },
     menu: { beer: true, wine: false, cocktail: true },
-    image: '/assets/pub.jpg',
+    image: '/hop-spot/assets/pub.jpg',
     openingTimes: [
       {
         close: { day: 1, time: '0030' },
