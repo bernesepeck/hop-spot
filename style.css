@@ -142,6 +142,8 @@ button {
     0 4px 4px rgba(0, 0, 0, 0.15), 0 8px 8px rgba(0, 0, 0, 0.15);
   --border: 3px solid var(--color-black);
   --border-radius: 5px;
+  --ball-shadow-black: inset 5px 5px 24px 4px var(--color-black);
+  --ball-shadow-red: inset 5px 5px 24px 4px var(--color-red);
 }
 
 body,
@@ -201,7 +203,7 @@ h4 {
 }
 
 .icon-button.active {
-  color: var(--color-pink);
+  color: var(--color-red);
 }
 .icon-button.active [class^='icon-'] {
   text-shadow: var(--inner-text-shadow);
@@ -229,24 +231,24 @@ label {
 }
 
 .top-left {
-  background-color: var(--color-red);
+  box-shadow: var(--ball-shadow-black);
   width: 300px;
   height: 300px;
-  transform: translateX(-50px);
+  transform: translate(-67px, 20px);
 }
 
 .right {
-  background-color: var(--color-pink);
+  box-shadow: var(--ball-shadow-red);
   width: 500px;
   height: 500px;
-  transform: translateX(150px);
+  transform: translateX(186px);
 }
 
 .bottom-right {
-  background-color: var(--color-blue);
+  box-shadow: var(--ball-shadow-black);
   width: 400px;
   height: 400px;
-  transform: translate(225px, 470px);
+  transform: translate(230px, 470px);
 }
 
 /* General Site Wrapper Style */
@@ -268,6 +270,13 @@ label {
 .z-index-over-background {
   z-index: 1;
 }
+
+/* HOME Styling */
+
+/* .home h1 {
+  margin-top: 20px;
+  width: 40px;
+} */
 
 /* BAR Site Styles */
 .bar {
@@ -359,7 +368,7 @@ input[type='range']::-webkit-slider-thumb {
   width: var(--slider-button-size);
   height: var(--slider-button-size);
   border-radius: 50%;
-  background-color: var(--color-pink);
+  background-color: var(--color-red);
 }
 
 /* All the same stuff for Firefox */
@@ -369,7 +378,7 @@ input[type='range']::-moz-range-thumb {
   width: var(--slider-button-size);
   height: var(--slider-button-size);
   border-radius: 50%;
-  background-color: var(--color-pink);
+  background-color: var(--color-red);
 }
 
 input[type='range']::-webkit-slider-runnable-track {
@@ -446,8 +455,40 @@ input[type='range']::-ms-track {
   width: 100%;
 }
 
+.filter-wrapper .find-bar-wrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.filter-wrapper .find-bar-wrapper button {
+  width: 100%;
+}
+
+.filter-wrapper .find-bar-wrapper span {
+  font-size: 14px;
+  text-transform: uppercase;
+  text-align: center;
+}
+
 .filter-wrapper input {
   width: 100%;
+}
+
+.field-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 6);
+}
+
+.filter-wrapper .button-list {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.filter-wrapper span {
+  margin-top: auto;
 }
 
 /*LOADING WRAPPER */

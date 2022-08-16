@@ -74,6 +74,7 @@ const filterProjector = (appController, rootElement) => {
    */
   const buttonList = (label, Attr) => {
     const wrapper = document.createElement('DIV');
+    wrapper.classList.add('field-wrapper');
     const buttonGroup = document.createElement('DIV');
     buttonGroup.setAttribute('class', 'button-list');
     const buttons = [];
@@ -102,6 +103,7 @@ const filterProjector = (appController, rootElement) => {
    */
   const rangeInput = (attr, min = 0, max = 100) => {
     const wrapper = document.createElement('DIV');
+    wrapper.classList.add('field-wrapper');
     const rangeInput = document.createElement('INPUT');
     rangeInput.setAttribute('type', 'range');
     rangeInput.setAttribute('id', attr.getQualifier());
@@ -138,6 +140,7 @@ const filterProjector = (appController, rootElement) => {
    */
   const autoComplete = (AttrInput, AttrList) => {
     const wrapper = document.createElement('DIV');
+    wrapper.classList.add('field-wrapper');
     //Create Input Element
     const inputElement = document.createElement('INPUT');
     inputElement.setAttribute('type', 'text');
@@ -249,15 +252,18 @@ const filterProjector = (appController, rootElement) => {
   filter.appendChild(rangeInput(appController.filterModel.distance, 0, 10));
   filter.appendChild(
     buttonList(
-      label('Drinkpräverenzen', 'drink-filter'),
+      label('Drink', 'drink-filter'),
       appController.filterModel.drinkPref
     )
   );
 
+  const buttonWrapper = document.createElement('DIV');
+  buttonWrapper.classList.add('find-bar-wrapper');
   const findBarButton = button('Finde Bar', () => appController.findBar());
   const errorMessageElement = errorMessage();
-  filter.appendChild(errorMessageElement);
-  filter.appendChild(findBarButton);
+  buttonWrapper.appendChild(errorMessageElement);
+  buttonWrapper.appendChild(findBarButton);
+  filter.appendChild(buttonWrapper);
 
   appController.onNoBarFoundChange((isBar) =>
     toggleError(findBarButton, isBar, errorMessageElement)
