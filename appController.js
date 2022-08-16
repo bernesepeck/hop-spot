@@ -72,7 +72,6 @@ const AppController = () => {
    * @returns  {boolean}
    */
   const isOpenNow = (date, periods) => {
-    if (!periods.length) return false;
     const weekdayNow = date.getDay();
     const todaysOpenTimes = periods?.filter(
       (p) => p.open.day === weekdayNow || p.close?.day === weekdayNow
