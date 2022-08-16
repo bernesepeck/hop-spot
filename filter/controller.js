@@ -48,7 +48,7 @@ const LocationController = (filterModel, noLocation) => {
     // handle success case
     function onSuccess(position) {
       location.lat = position.coords.latitude;
-      location.lng = position.coords.lng;
+      location.lng = position.coords.longitude;
       setCurrentUserLocation(location);
     }
 
