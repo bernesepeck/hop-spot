@@ -24,8 +24,7 @@ import { locationService } from '../service/locationService.js';
  * @property {() => {location: LocationAddressType}} getSelectedLocationModel
  * @property {CallableFunction} onLocationModelSelected
  * @property {() => void} clearLocation
- * @property {() => LocationType} getCurrentLocation
- * @property {() => void} setCurrentUserLocation
+ * @property {() => void} getCurrentLocation
  * @property {(location1: LocationType, location2: LocationType) => number} getDistance
  * @property {(searchString: string) => void} onLocationSearched
  * @property {() => boolean} isCurrentLocationSet
@@ -41,7 +40,6 @@ const LocationController = (filterModel, noLocation) => {
 
   /**
    * Gets the current user position with the navigator API
-   * @returns {LocationType | undefined}
    */
   const getCurrentLocation = () => {
     navigator.geolocation.getCurrentPosition(onSuccess, onError);
@@ -51,20 +49,19 @@ const LocationController = (filterModel, noLocation) => {
     function onSuccess(position) {
       location.lat = position.coords.latitude;
       location.lng = position.coords.lng;
+      setCurrentUserLocation(location);
     }
 
     // handle error case
     function onError() {
-      console.log('error');
+      setCurrentUserLocation(undefined);
     }
-    //Mock as geolocation only works with https
-    return location.lat && location.lng ? location : undefined;
   };
 
-  const setCurrentUserLocation = () => {
+  const setCurrentUserLocation = (location) => {
     selectedLocationModelObs.setValue({
-      location: getCurrentLocation(),
-      address: getCurrentLocation()
+      location: location,
+      address: location
         ? 'Aktueller Standort'
         : 'Aktueller Standort nicht gefunden',
     });
@@ -129,7 +126,6 @@ const LocationController = (filterModel, noLocation) => {
     onLocationModelSelected: selectedLocationModelObs.onChange,
     clearLocation: clearLocation,
     getCurrentLocation: getCurrentLocation,
-    setCurrentUserLocation: setCurrentUserLocation,
     getDistance: getDistance,
     onLocationSearched: onLocationSearched,
     isCurrentLocationSet: () => isCurrentLocation,

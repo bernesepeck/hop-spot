@@ -164,7 +164,7 @@ const AppController = () => {
     findBar: findBar,
     onLocationSearched: locationController.onLocationSearched,
     onMountFilterView: onMountFilterView,
-    setCurrentUserLocation: locationController.setCurrentUserLocation,
+    setCurrentUserLocation: locationController.getCurrentLocation,
     isOpenNow: isOpenNow,
     setSelectedLocationModel: locationController.setSelectedLocationModel,
     filterModel: filterModel,
