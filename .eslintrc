@@ -2,7 +2,7 @@
   "extends": [
     "plugin:prettier/recommended"
   ],
-  "ignorePatterns": ["common/kolibri/"],
+  "ignorePatterns": ["common/kolibri/", "service/firebase/"],
   "plugins": ["prettier"],
   "parserOptions": {
     "sourceType": "module",
