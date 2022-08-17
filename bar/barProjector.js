@@ -58,12 +58,7 @@ const barProjector = (appController, rootElement, bar) => {
   barElement.appendChild(title(bar.getTitle(), 1));
   barElement.appendChild(image(bar.getImage()));
   dataWrapperElement.appendChild(
-    dataItem(
-      'Öffnungszeiten',
-      `${dateToTimeString(
-        dateStringToDate(bar.getOpenTimes().from)
-      )} - ${dateToTimeString(dateStringToDate(bar.getOpenTimes().to))}`
-    )
+    dataItem('Öffnungszeiten', bar.getTodaysOpeningTimes())
   );
   dataWrapperElement.appendChild(
     dataItem('Distanz', `${roundDecimal(bar.getDistance())}km`)

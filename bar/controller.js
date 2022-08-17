@@ -5,17 +5,17 @@ export { SelectionController, Bar };
 /**
  * @typedef BarType
  * @property {() => string} getTitle
- * @property {(string) => {}} setTitle
- * @property {() => OpenTimesType} getOpenTimes
- * @property {(OpenTimesType) => {}} setOpenTimes
+ * @property {(value: string) => {}} setTitle
+ * @property {() => string} getTodaysOpeningTimes
+ * @property {(value: string) => void} setTodaysOpeningTimes
  * @property {() => import('../filter/controller.js').LocationType} getCoordinates
  * @property {(location: import('../filter/controller.js').LocationType) => {}} setCoordinates
  * @property {() => number} getDistance
- * @property {(number) => {}} setDistance
+ * @property {(value: number) => {}} setDistance
  * @property {() => MenuType} getMenu
- * @property {(MenuType) => {}} setMenu
+ * @property {(value: MenuType) => {}} setMenu
  * @property {() => string} getImage
- * @property {(string) => {}} setImage
+ * @property {(value: string) => {}} setImage
  * @property {(value: OpeningTimesType[]) => {}} setOpeningTimes
  * @property {() => OpeningTimesType[]} getOpeningTimes
  */
@@ -50,10 +50,7 @@ export { SelectionController, Bar };
  */
 const Bar = () => {
   let title = '';
-  let openTimes = {
-    from: new Date(new Date().setHours(0, 0, 0, 0)),
-    to: new Date(new Date().setHours(0, 0, 0, 0)),
-  };
+  let openingTimesToday = '';
   let coordinates = { lat: 0, lng: 0 };
   let distance = 0;
   let menu = { beer: false, wine: false, cocktail: false };
@@ -63,8 +60,8 @@ const Bar = () => {
   return {
     getTitle: () => title,
     setTitle: (value) => (title = value),
-    getOpenTimes: () => openTimes,
-    setOpenTimes: (value) => (openTimes = value),
+    getTodaysOpeningTimes: () => openingTimesToday,
+    setTodaysOpeningTimes: (value) => (openingTimesToday = value),
     getCoordinates: () => coordinates,
     setCoordinates: (value) => (coordinates = value),
     getDistance: () => distance,

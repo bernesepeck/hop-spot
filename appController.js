@@ -57,7 +57,6 @@ const AppController = () => {
   const addBar = (barData) => {
     const bar = Bar();
     bar.setTitle(barData.title);
-    bar.setOpenTimes(barData.openTimes);
     bar.setCoordinates(barData.coordinates);
     bar.setMenu(barData.menu);
     bar.setImage(barData.image);
@@ -100,6 +99,22 @@ const AppController = () => {
   };
 
   /**
+   * Setzt die heutigen Öffnungszeiten der Bar
+   * @param {import('./bar/controller.js').BarType} bar
+   */
+  const setTodaysOpeningTime = (bar) => {
+    const weekDay = new Date().getDay();
+    const times = bar
+      .getOpeningTimes()
+      .find((times) => times.open.day === weekDay);
+    bar.setTodaysOpeningTimes(
+      times
+        ? [times.open.time, times.close.time].join(' - ')
+        : 'Heute geschlossen'
+    );
+  };
+
+  /**
    * Returns randomly a bar from the list which matches the current set filters
    * @param {boolean} [onlyCheck]
    * @return {void}
@@ -136,6 +151,7 @@ const AppController = () => {
     );
     if (bar) {
       if (!onlyCheck) {
+        setTodaysOpeningTime(bar);
         setTimeout(() => {
           selectionController.setBarLoading(false);
           selectionController.setSelectedModel(bar);
